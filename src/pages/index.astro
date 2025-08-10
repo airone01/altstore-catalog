@@ -1,25 +1,45 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 // Component Imports
-import Button from '../components/Button.astro';
+import { AuroraBackground } from "@/components/ui/aurora-background";
+import { Button } from "@/components/ui/button";
+import { TextReveal } from "@/components/ui/text-reveal";
 
 // Full Astro Component Syntax:
 // https://docs.astro.build/basics/astro-components/
 ---
 
-<html lang="en">
+<html lang="en" class="h-full">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro + TailwindCSS</title>
+		<title>An AltStore Catalog</title>
 	</head>
 
-	<body>
-		<div class="grid place-items-center h-screen content-center">
+	<body class="h-full">
+		<AuroraBackground children={[]} className="h-full w-full top-0 left-0 absolute -z-10" />
+
+		<!-- Actual body -->
+		<div class="flex flex-col justify-center items-center h-full">
+			<div class="container flex flex-col gap-5 items-center">
+				<h1 class="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">An AltStore catalog</h1>
+				<TextReveal client:load text="A catalog of apps and sources for AltStore & PAL" className="scroll-m-20 text-xl font-semibold tracking-tight" />
+				<div class="flex gap-2">
+					<a href="apps">
+						<Button className="cursor-pointer">Browse Apps</Button>
+					</a>
+					<a href="sources">
+						<Button className="cursor-pointer">Browse sources</Button>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- <div class="grid place-items-center h-screen content-center">
 			<Button>Tailwind Button in Astro!</Button>
 			<a href="/markdown-page" class="p-4 underline">Markdown is also supported...</a>
-		</div>
+		</div> -->
 	</body>
 </html>
