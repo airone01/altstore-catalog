@@ -152,7 +152,7 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
               <div>
                 <h4 class="font-medium mb-3">PAL</h4>
                 <ol class="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                  <li>Open PAL on your device</li>
+                  <li>Open AltStore PAL on your device</li>
                   <li>Go to the Settings tab</li>
                   <li>Tap "Add Source"</li>
                   <li>Paste this URL: <code class="bg-muted px-1 py-0.5 rounded text-xs break-all">{source.data.url}</code></li>
@@ -288,7 +288,7 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
               >
                 Copy Source URL
               </Button>
-              
+
               {source.data.website && (
                 <a href={source.data.website} target="_blank" rel="noopener noreferrer" class="block">
                   <Button variant="outline" className="w-full" size="sm">
@@ -296,7 +296,7 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
                   </Button>
                 </a>
               )}
-              
+
               <Button 
                 variant="outline" 
                 class="w-full" 
@@ -373,7 +373,7 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
     <footer class="mt-16 border-t bg-background/50 backdrop-blur-sm">
       <div class="container mx-auto px-4 py-8">
         <div class="text-center text-sm text-muted-foreground">
-          <p>Community-maintained catalog for AltStore & PAL</p>
+          <p>Community-maintained catalog for AltStore & AltStore PAL</p>
           <p class="mt-2">
             <a href="/" class="hover:text-foreground transition-colors">Home</a> • 
             <a href="/apps" class="hover:text-foreground transition-colors ml-1">Apps</a> • 

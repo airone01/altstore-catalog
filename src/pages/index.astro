@@ -37,10 +37,10 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>AltStore Catalog - Discover Apps & Sources for AltStore & PAL</title>
-    <meta name="description" content="The ultimate community-driven catalog of apps and sources for AltStore and PAL. Discover, share, and install amazing iOS apps." />
+    <title>AltStore Catalog - Discover Apps & Sources for AltStore & AltStore PAL</title>
+    <meta name="description" content="The ultimate community-driven catalog of apps and sources for AltStore and AltStore PAL. Discover, share, and install amazing iOS apps." />
     <meta property="og:title" content="AltStore Catalog" />
-    <meta property="og:description" content="Community catalog for AltStore & PAL apps and sources" />
+    <meta property="og:description" content="Community catalog for AltStore & AltStore PAL apps and sources" />
     <meta property="og:type" content="website" />
   </head>
 
@@ -72,7 +72,7 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
         </h1>
         <TextReveal 
           client:load 
-          text="A catalog of apps and sources for AltStore & PAL" 
+          text="A catalog of apps and sources for AltStore & AltStore PAL" 
           className="text-xl md:text-2xl font-semibold tracking-tight text-muted-foreground"
         />
         <p class="text-lg text-muted-foreground max-w-2xl">
@@ -238,7 +238,7 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
           <div>
             <h3 class="font-semibold mb-4">AltStore Catalog</h3>
             <p class="text-sm text-muted-foreground mb-4">
-              Community-maintained catalog of apps and sources for AltStore & PAL.
+              Community-maintained catalog of apps and sources for AltStore & AltStore PAL.
             </p>
             <div class="flex gap-2">
               <Badge variant="outline" className="text-xs">{totalApps} Apps</Badge>
