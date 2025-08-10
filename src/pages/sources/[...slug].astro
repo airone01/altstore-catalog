@@ -1,0 +1,395 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { AuroraBackground } from "@/components/ui/aurora-background";
+import "../../styles/global.css";
+
+export async function getStaticPaths() {
+	const sources = await getCollection("sources");
+	return sources.map((source) => ({
+		params: { slug: source.slug },
+		props: source,
+	}));
+}
+
+const source = Astro.props;
+const { Content } = await source.render();
+
+// Get related sources (same category, excluding current)
+const allSources = await getCollection("sources");
+const relatedSources = allSources
+	.filter(
+		(relatedSource) =>
+			relatedSource.data.category === source.data.category &&
+			relatedSource.slug !== source.slug,
+	)
+	.slice(0, 3);
+
+// Find apps that might be from this source (for demo purposes)
+const allApps = await getCollection("apps");
+const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filter by actual source
+---
+
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{source.data.name} - AltStore Catalog</title>
+    <meta name="description" content={source.data.description} />
+    <meta property="og:title" content={source.data.name} />
+    <meta property="og:description" content={source.data.description} />
+    {source.data.icon && <meta property="og:image" content={source.data.icon} />}
+  </head>
+
+  <body class="h-full min-h-screen">
+    <AuroraBackground children={[]} className="h-full w-full top-0 left-0 fixed -z-10" />
+    
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
+      <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <a href="/" class="text-xl font-bold">AltStore Catalog</a>
+          <div class="flex gap-2">
+            <a href="/apps">
+              <Badge variant="outline">Apps</Badge>
+            </a>
+            <a href="/sources">
+              <Badge variant="default">Sources</Badge>
+            </a>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <a href="/sources">
+            <Button variant="outline" size="sm">← Back to Sources</Button>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+      <!-- Source Header -->
+      <div class="mb-8">
+        <div class="flex flex-col md:flex-row gap-6 mb-6">
+          <div class="flex-shrink-0">
+            {source.data.icon ? (
+              <img 
+                src={source.data.icon} 
+                alt={`${source.data.name} icon`}
+                class="w-24 h-24 md:w-32 md:h-32 rounded-3xl object-cover shadow-lg"
+              />
+            ) : (
+              <div class="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-primary/10 flex items-center justify-center shadow-lg">
+                <span class="text-2xl md:text-3xl font-bold text-primary">
+                  {source.data.name.charAt(0)}
+                </span>
+              </div>
+            )}
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <h1 class="scroll-m-20 text-3xl font-extrabold tracking-tight">{source.data.name}</h1>
+                  {source.data.verified && (
+                    <Badge variant="default" class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                      ✓ Verified
+                    </Badge>
+                  )}
+                </div>
+                <p class="text-lg text-muted-foreground">by {source.data.maintainer}</p>
+              </div>
+              
+              <div class="flex flex-col sm:flex-row gap-2">
+                <Button 
+                  size="lg" 
+                  onClick={`navigator.clipboard.writeText('${source.data.url}'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Source URL', 2000)`}
+                >
+                  Copy Source URL
+                </Button>
+                {source.data.website && (
+                  <a href={source.data.website} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" size="lg" class="w-full sm:w-auto">
+                      Visit Website
+                    </Button>
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <p class="text-base text-foreground mb-4">{source.data.description}</p>
+          </div>
+        </div>
+
+        <!-- How to Add This Source -->
+        <Card class="bg-primary/5 border-primary/20">
+          <CardHeader>
+            <CardTitle class="text-lg">How to Add This Source</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 class="font-medium mb-3">AltStore</h4>
+                <ol class="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                  <li>Open AltStore on your device</li>
+                  <li>Tap the "Browse" tab at the bottom</li>
+                  <li>Tap the "+" button in the top-right corner</li>
+                  <li>Paste this URL: <code class="bg-muted px-1 py-0.5 rounded text-xs break-all">{source.data.url}</code></li>
+                  <li>Tap "Add Source"</li>
+                </ol>
+              </div>
+              <div>
+                <h4 class="font-medium mb-3">PAL</h4>
+                <ol class="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                  <li>Open PAL on your device</li>
+                  <li>Go to the Settings tab</li>
+                  <li>Tap "Add Source"</li>
+                  <li>Paste this URL: <code class="bg-muted px-1 py-0.5 rounded text-xs break-all">{source.data.url}</code></li>
+                  <li>Tap "Add"</li>
+                </ol>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Main Content Area -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Apps from this Source -->
+          {sourceApps.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Apps in this Source</CardTitle>
+                <CardDescription>
+                  Popular apps available through {source.data.name}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {sourceApps.map(app => (
+                    <div key={app.slug} class="flex items-center gap-3 p-3 rounded-lg border hover:bg-accent/50 transition-colors">
+                      <img 
+                        src={app.data.icon} 
+                        alt={`${app.data.name} icon`}
+                        class="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                      />
+                      <div class="flex-1 min-w-0">
+                        <h4 class="font-medium text-sm truncate">{app.data.name}</h4>
+                        <p class="text-xs text-muted-foreground truncate">{app.data.developer}</p>
+                      </div>
+                      <a href={`/apps/${app.slug}`}>
+                        <Button size="sm" variant="ghost" class="text-xs">
+                          View
+                        </Button>
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <!-- Description/Content -->
+          <Card>
+            <CardHeader>
+              <CardTitle>About {source.data.name}</CardTitle>
+            </CardHeader>
+            <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+              <Content />
+            </CardContent>
+          </Card>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+          <!-- Source Information -->
+          <Card>
+            <CardHeader>
+              <CardTitle>Source Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">URL</label>
+                <p class="text-sm break-all font-mono bg-muted p-2 rounded">{source.data.url}</p>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Maintainer</label>
+                <p class="text-sm">{source.data.maintainer}</p>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Category</label>
+                <p class="text-sm">{source.data.category}</p>
+              </div>
+              <!-- <div>
+                <label class="text-sm font-medium text-muted-foreground">App Count</label>
+                <p class="text-sm">{source.data.appCount} apps</p>
+              </div> -->
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Last Updated</label>
+                <p class="text-sm">{source.data.lastUpdated.toLocaleDateString()}</p>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Status</label>
+                <div class="flex items-center gap-2">
+                  {source.data.verified ? (
+                    <Badge variant="default" className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                      ✓ Verified
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-xs">
+                      Community
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <!-- Tags -->
+          {source.data.tags && source.data.tags.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Tags</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div class="flex flex-wrap gap-2">
+                  {source.data.tags.map(tag => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <!-- Quick Actions -->
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button 
+                class="w-full" 
+                size="sm"
+                onClick={`navigator.clipboard.writeText('${source.data.url}'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Source URL', 2000)`}
+              >
+                Copy Source URL
+              </Button>
+              
+              {source.data.website && (
+                <a href={source.data.website} target="_blank" rel="noopener noreferrer" class="block">
+                  <Button variant="outline" className="w-full" size="sm">
+                    Visit Website
+                  </Button>
+                </a>
+              )}
+              
+              <Button 
+                variant="outline" 
+                class="w-full" 
+                size="sm"
+                onClick={`navigator.share ? navigator.share({title: '${source.data.name}', text: '${source.data.description}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)`}
+              >
+                Share Source
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      <!-- Related Sources -->
+      {relatedSources.length > 0 && (
+        <section class="mt-12">
+          <h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6">
+            More {source.data.category} Sources
+          </h2>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {relatedSources.map(relatedSource => (
+              <Card key={relatedSource.slug} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div class="flex items-start gap-3">
+                    {relatedSource.data.icon ? (
+                      <img 
+                        src={relatedSource.data.icon} 
+                        alt={`${relatedSource.data.name} icon`}
+                        class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <span class="text-lg font-bold text-primary">
+                          {relatedSource.data.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1">
+                        <CardTitle className="text-lg leading-tight">{relatedSource.data.name}</CardTitle>
+                        {relatedSource.data.verified && (
+                          <Badge variant="default" className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            ✓
+                          </Badge>
+                        )}
+                      </div>
+                      <CardDescription className="text-sm">by {relatedSource.data.maintainer}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
+                    {relatedSource.data.description}
+                  </p>
+                  
+                  <div class="flex items-center justify-between">
+                    <Badge variant="outline" className="text-xs">
+                      {/* {relatedSource.data.appCount} apps */}
+                      990 apps
+                    </Badge>
+                    <a href={`/sources/${relatedSource.slug}`}>
+                      <Button size="sm">View</Button>
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-16 border-t bg-background/50 backdrop-blur-sm">
+      <div class="container mx-auto px-4 py-8">
+        <div class="text-center text-sm text-muted-foreground">
+          <p>Community-maintained catalog for AltStore & PAL</p>
+          <p class="mt-2">
+            <a href="/" class="hover:text-foreground transition-colors">Home</a> • 
+            <a href="/apps" class="hover:text-foreground transition-colors ml-1">Apps</a> • 
+            <a href="/sources" class="hover:text-foreground transition-colors ml-1">Sources</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

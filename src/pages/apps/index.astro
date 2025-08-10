@@ -1,0 +1,406 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { AuroraBackground } from "@/components/ui/aurora-background";
+import { InstallButton } from "@/components/install-button";
+import "../../styles/global.css";
+
+export async function getStaticPaths() {
+	const apps = await getCollection("apps");
+	return apps.map((app) => ({
+		params: { slug: app.slug },
+		props: app,
+	}));
+}
+
+const app = Astro.props;
+const { Content } = await app.render();
+
+// Get related apps (same category, excluding current)
+const allApps = await getCollection("apps");
+const relatedApps = allApps
+	.filter(
+		(relatedApp) =>
+			relatedApp.data.category === app.data.category &&
+			relatedApp.slug !== app.slug,
+	)
+	.sort((a, b) => (b.data.priority || 0) - (a.data.priority || 0))
+	.slice(0, 4);
+
+// Format file size
+const formatSize = (size: string) => {
+	return size.replace(/(\d+\.?\d*)\s*(MB|GB|KB)/gi, (match, num, unit) => {
+		return `${parseFloat(num).toFixed(1)} ${unit.toUpperCase()}`;
+	});
+};
+
+// Format rating
+const formatRating = (rating?: number) => {
+	if (!rating) return null;
+	const stars =
+		"★".repeat(Math.floor(rating)) + "☆".repeat(5 - Math.floor(rating));
+	return `${stars} ${rating.toFixed(1)}`;
+};
+---
+
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{app.data.name} by {app.data.developer} - AltStore Catalog</title>
+    <meta name="description" content={app.data.description} />
+    <meta property="og:title" content={`${app.data.name} by ${app.data.developer}`} />
+    <meta property="og:description" content={app.data.description} />
+    <meta property="og:image" content={app.data.icon} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+
+  <body class="h-full min-h-screen">
+    <AuroraBackground children={[]} className="h-full w-full top-0 left-0 fixed -z-10" />
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
+      <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <a href="/" class="text-xl font-bold">AltStore Catalog</a>
+          <div class="flex gap-2">
+            <a href="/apps">
+              <Badge variant="default">Apps</Badge>
+            </a>
+            <a href="/sources">
+              <Badge variant="outline">Sources</Badge>
+            </a>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <a href="/apps">
+            <Button variant="outline" size="sm">← Back to Apps</Button>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+      <!-- App Header -->
+      <div class="mb-8">
+        <div class="flex flex-col lg:flex-row gap-8 mb-6">
+          <!-- App Icon & Basic Info -->
+          <div class="flex flex-col md:flex-row gap-6 lg:flex-1">
+            <div class="flex-shrink-0">
+              <img 
+                src={app.data.icon} 
+                alt={`${app.data.name} icon`}
+                class="w-32 h-32 md:w-40 md:h-40 rounded-3xl object-cover shadow-lg"
+              />
+            </div>
+            
+            <div class="flex-1 min-w-0">
+              <div class="mb-4">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                  <h1 class="scroll-m-20 text-3xl md:text-4xl font-extrabold tracking-tight">{app.data.name}</h1>
+                  {app.data.verified && (
+                    <Badge variant="default" class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                      ✓ Verified
+                    </Badge>
+                  )}
+                  {app.data.featured && (
+                    <Badge variant="default" class="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                      ⭐ Featured
+                    </Badge>
+                  )}
+                </div>
+                <p class="text-lg text-muted-foreground mb-2">by {app.data.developer}</p>
+                <p class="text-base text-foreground">{app.data.description}</p>
+              </div>
+
+              <!-- Rating & Stats -->
+              <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-muted-foreground">
+                {app.data.rating && (
+                  <div class="flex items-center gap-1">
+                    <span class="text-yellow-500">{formatRating(app.data.rating)}</span>
+                  </div>
+                )}
+                <span>{formatSize(app.data.size)}</span>
+                <span>v{app.data.version}</span>
+                <span>{app.data.price}</span>
+                {app.data.downloads && <span>{app.data.downloads} downloads</span>}
+              </div>
+
+              <!-- Category & Tags -->
+              <div class="flex flex-wrap gap-2 mb-4">
+                <Badge variant="default">{app.data.category}</Badge>
+                {app.data.tags?.map(tag => (
+                  <Badge key={tag} variant="secondary">{tag}</Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Install Section -->
+          <div class="lg:w-80">
+            <Card>
+              <CardHeader>
+                <CardTitle class="text-lg">Install {app.data.name}</CardTitle>
+                <CardDescription>
+                  Compatible with {app.data.compatibility}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <InstallButton 
+                  client:load
+                  appName={app.data.name}
+                  downloadUrl={app.data.downloadUrl}
+                  palDownloadUrl={app.data.palDownloadUrl}
+                  size="lg"
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Main Content Area -->
+        <div class="lg:col-span-2 space-y-8">
+          <!-- Screenshots -->
+          {app.data.screenshots && app.data.screenshots.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Screenshots</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {app.data.screenshots.map((screenshot, index) => (
+                    <img 
+                      key={index}
+                      src={screenshot} 
+                      alt={`${app.data.name} screenshot ${index + 1}`}
+                      class="w-full rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <!-- Features -->
+          {app.data.features && app.data.features.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Features</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul class="space-y-2">
+                  {app.data.features.map((feature, index) => (
+                    <li key={index} class="flex items-start gap-2">
+                      <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span class="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
+
+          <!-- Description/Content -->
+          <Card>
+            <CardHeader>
+              <CardTitle>About {app.data.name}</CardTitle>
+            </CardHeader>
+            <CardContent class="prose prose-sm max-w-none dark:prose-invert">
+              <Content />
+            </CardContent>
+          </Card>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+          <!-- App Information -->
+          <Card>
+            <CardHeader>
+              <CardTitle>App Information</CardTitle>
+            </CardHeader>
+            <CardContent class="space-y-4">
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Version</label>
+                <p class="text-sm">{app.data.version}</p>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Size</label>
+                <p class="text-sm">{formatSize(app.data.size)}</p>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Category</label>
+                <p class="text-sm capitalize">{app.data.category}</p>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Compatibility</label>
+                <p class="text-sm">{app.data.compatibility}</p>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Price</label>
+                <p class="text-sm">{app.data.price}</p>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Last Updated</label>
+                <p class="text-sm">{app.data.lastUpdated.toLocaleDateString()}</p>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-muted-foreground">Developer</label>
+                <p class="text-sm">{app.data.developer}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <!-- Links -->
+          <Card>
+            <CardHeader>
+              <CardTitle>Links</CardTitle>
+            </CardHeader>
+            <CardContent class="space-y-3">
+              {app.data.website && (
+                <a href={app.data.website} target="_blank" rel="noopener noreferrer" class="block">
+                  <Button variant="outline" class="w-full" size="sm">
+                    Official Website
+                  </Button>
+                </a>
+              )}
+              
+              {app.data.sourceUrl && (
+                <a href={app.data.sourceUrl} target="_blank" rel="noopener noreferrer" class="block">
+                  <Button variant="outline" class="w-full" size="sm">
+                    Source Code
+                  </Button>
+                </a>
+              )}
+              
+              {app.data.appStoreUrl && (
+                <a href={app.data.appStoreUrl} target="_blank" rel="noopener noreferrer" class="block">
+                  <Button variant="outline" class="w-full" size="sm">
+                    App Store
+                  </Button>
+                </a>
+              )}
+              
+              <Button 
+                variant="outline" 
+                class="w-full" 
+                size="sm"
+                onClick={`navigator.share ? navigator.share({title: '${app.data.name}', text: '${app.data.description}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)`}
+              >
+                Share App
+              </Button>
+            </CardContent>
+          </Card>
+
+          <!-- Installation Requirements -->
+          <Card>
+            <CardHeader>
+              <CardTitle>Requirements</CardTitle>
+            </CardHeader>
+            <CardContent class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-muted-foreground">iOS Version:</span>
+                <span>{app.data.minIos || "Unknown"}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-muted-foreground">Storage:</span>
+                <span>{formatSize(app.data.size)}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-muted-foreground">AltStore:</span>
+                <span class="text-green-600">✓ Compatible</span>
+              </div>
+              {app.data.palDownloadUrl && (
+                <div class="flex justify-between">
+                  <span class="text-muted-foreground">AltStore PAL:</span>
+                  <span class="text-green-600">✓ Compatible</span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      <!-- Related Apps -->
+      {relatedApps.length > 0 && (
+        <section class="mt-12">
+          <h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6">
+            More {app.data.category} Apps
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {relatedApps.map(relatedApp => (
+              <Card key={relatedApp.slug} class="hover:shadow-lg transition-shadow">
+                <CardHeader class="pb-4">
+                  <div class="flex items-start gap-3">
+                    <img 
+                      src={relatedApp.data.icon} 
+                      alt={`${relatedApp.data.name} icon`}
+                      class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+                    />
+                    <div class="flex-1 min-w-0">
+                      <CardTitle class="text-lg leading-tight truncate">{relatedApp.data.name}</CardTitle>
+                      <CardDescription class="text-sm">{relatedApp.data.developer}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
+                    {relatedApp.data.description}
+                  </p>
+                  
+                  <div class="flex items-center justify-between">
+                    <div class="text-xs text-muted-foreground">
+                      {relatedApp.data.price}
+                    </div>
+                    <a href={`/apps/${relatedApp.slug}`}>
+                      <Button size="sm">View</Button>
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-16 border-t bg-background/50 backdrop-blur-sm">
+      <div class="container mx-auto px-4 py-8">
+        <div class="text-center text-sm text-muted-foreground">
+          <p>Community-maintained catalog for AltStore & PAL</p>
+          <p class="mt-2">
+            <a href="/" class="hover:text-foreground transition-colors">Home</a> • 
+            <a href="/apps" class="hover:text-foreground transition-colors ml-1">Apps</a> • 
+            <a href="/sources" class="hover:text-foreground transition-colors ml-1">Sources</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
