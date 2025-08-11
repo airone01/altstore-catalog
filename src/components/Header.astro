@@ -1,0 +1,41 @@
+---
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+
+export interface Props {
+  currentPath?: "home" | "apps" | "sources";
+}
+
+const { currentPath = "home" } = Astro.props;
+---
+
+<nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
+  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <a href="/" class="text-xl font-bold">Ascend</a>
+      <div class="flex gap-2">
+        <a href="/apps">
+          <Badge variant={currentPath === "apps" ? "default" : "outline"}
+            >Apps</Badge
+          >
+        </a>
+        <a href="/sources">
+          <Badge variant={currentPath === "sources" ? "default" : "outline"}
+            >Sources</Badge
+          >
+        </a>
+      </div>
+    </div>
+    {
+      currentPath !== "home" && (
+        <div class="flex gap-2">
+          <a href="/">
+            <Button variant="outline" size="sm">
+              ← Home
+            </Button>
+          </a>
+        </div>
+      )
+    }
+  </div>
+</nav>

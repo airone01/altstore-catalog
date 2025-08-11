@@ -1,30 +1,30 @@
 ---
 import { getCollection } from "astro:content";
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { TextReveal } from "@/components/ui/text-reveal";
 import "@/styles/global.css";
-import { SearchComponent } from "@/components/search";
+import Favicon from "@/../public/favicon.svg";
 
 // Get latest apps and sources for preview
 const apps = await getCollection("apps");
 const sources = await getCollection("sources");
 
 const latestApps = apps
-	.sort((a, b) => b.data.lastUpdated.getTime() - a.data.lastUpdated.getTime())
-	.slice(0, 6);
+  .sort((a, b) => b.data.lastUpdated.getTime() - a.data.lastUpdated.getTime())
+  .slice(0, 6);
 
 const featuredSources = sources
-	.filter((source) => source.data.verified)
-	.slice(0, 4);
+  .filter((source) => source.data.verified)
+  .slice(0, 4);
 
 const totalApps = apps.length;
 const totalSources = sources.length;
@@ -37,21 +37,32 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>AltStore Catalog - Discover Apps & Sources for AltStore & AltStore PAL</title>
-    <meta name="description" content="The ultimate community-driven catalog of apps and sources for AltStore and AltStore PAL. Discover, share, and install amazing iOS apps." />
-    <meta property="og:title" content="AltStore Catalog" />
-    <meta property="og:description" content="Community catalog for AltStore & AltStore PAL apps and sources" />
+    <title>Ascend - Discover Sources & Apps for AltStore & AltStore PAL</title>
+    <meta
+      name="description"
+      content="The ultimate community-driven catalog of apps and sources for AltStore and AltStore PAL. Discover, share, and install amazing iOS apps."
+    />
+    <meta property="og:title" content="Ascend" />
+    <meta
+      property="og:description"
+      content="Community catalog for AltStore & AltStore PAL apps and sources"
+    />
     <meta property="og:type" content="website" />
   </head>
 
   <body class="h-full">
-    <AuroraBackground children={[]} className="h-full w-full top-0 left-0 absolute -z-10" />
+    <AuroraBackground
+      children={[]}
+      className="h-full w-full top-0 left-0 absolute -z-10"
+    />
 
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
-      <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div
+        class="container mx-auto px-4 py-4 flex items-center justify-between"
+      >
         <div class="flex items-center gap-4">
-          <a href="/" class="text-xl font-bold">AltStore Catalog</a>
+          <a href="/" class="text-xl font-bold">Ascend</a>
           <div class="flex gap-2">
             <a href="/apps">
               <Badge variant="outline">Apps</Badge>
@@ -66,17 +77,25 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
 
     <!-- Hero Section -->
     <div class="flex flex-col justify-center items-center min-h-[60vh] px-4">
-      <div class="container flex flex-col gap-6 items-center text-center max-w-4xl">
-        <h1 class="scroll-m-20 text-4xl md:text-6xl font-extrabold tracking-tight text-balance">
-          AltStore Catalog
-        </h1>
-        <TextReveal 
-          client:load 
-          text="A catalog of apps and sources for AltStore & AltStore PAL" 
+      <div
+        class="container flex flex-col gap-6 items-center text-center max-w-4xl"
+      >
+        <div class="flex gap-6">
+          <Favicon class="h-full aspect-square" height={null} width={null} />
+          <h1
+            class="scroll-m-20 text-4xl md:text-6xl font-extrabold tracking-tight text-balance"
+          >
+            Ascend
+          </h1>
+        </div>
+        <TextReveal
+          client:load
+          text="A catalog of sources (and their apps) for AltStore & AltStore PAL"
           className="text-xl md:text-2xl font-semibold tracking-tight text-muted-foreground"
         />
         <p class="text-lg text-muted-foreground max-w-2xl">
-          Discover amazing iOS apps, find trusted sources, and contribute to the community-driven ecosystem of alternative app distribution.
+          Discover amazing iOS apps, find trusted sources, and contribute to the
+          community-driven ecosystem of alternative app distribution.
         </p>
         <div class="flex flex-col sm:flex-row gap-3 mt-4">
           <a href="/sources">
@@ -85,7 +104,11 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
             </Button>
           </a>
           <a href="/apps">
-            <Button size="lg" variant="outline" className="cursor-pointer w-full sm:w-auto">
+            <Button
+              size="lg"
+              variant="outline"
+              className="cursor-pointer w-full sm:w-auto"
+            >
               Browse Apps ({totalApps})
             </Button>
           </a>
@@ -97,22 +120,30 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
     <div class="container mx-auto px-4 py-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <Card className="text-center">
-          <CardContent className="pt-6">
+          <CardContent>
             <div class="text-3xl font-bold text-primary mb-2">{totalApps}</div>
             <h3 class="text-lg font-semibold mb-1">Apps Available</h3>
-            <p class="text-sm text-muted-foreground">Curated by the community</p>
+            <p class="text-sm text-muted-foreground">
+              From the sources cataloged
+            </p>
           </CardContent>
         </Card>
         <Card className="text-center">
-          <CardContent className="pt-6">
-            <div class="text-3xl font-bold text-primary mb-2">{totalSources}</div>
+          <CardContent>
+            <div class="text-3xl font-bold text-primary mb-2">
+              {totalSources}
+            </div>
             <h3 class="text-lg font-semibold mb-1">Sources Listed</h3>
-            <p class="text-sm text-muted-foreground">From developers worldwide</p>
+            <p class="text-sm text-muted-foreground">
+              From developers worldwide
+            </p>
           </CardContent>
         </Card>
         <Card className="text-center">
-          <CardContent className="pt-6">
-            <div class="text-3xl font-bold text-primary mb-2">{verifiedSources}</div>
+          <CardContent>
+            <div class="text-3xl font-bold text-primary mb-2">
+              {verifiedSources}
+            </div>
             <h3 class="text-lg font-semibold mb-1">Verified Sources</h3>
             <p class="text-sm text-muted-foreground">Trusted and secure</p>
           </CardContent>
@@ -122,111 +153,138 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
       <!-- Latest Apps Section -->
       <section class="mb-12">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="scroll-m-20 text-3xl font-semibold tracking-tight">Latest Apps</h2>
+          <h2 class="scroll-m-20 text-3xl font-semibold tracking-tight">
+            Latest Apps
+          </h2>
           <a href="/apps">
             <Button variant="outline">View All Apps</Button>
           </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {latestApps.map(app => (
-            <Card key={app.slug} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-4">
-                <div class="flex items-start gap-3">
-                  <img 
-                    src={app.data.icon} 
-                    alt={`${app.data.name} icon`}
-                    class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
-                  />
-                  <div class="flex-1 min-w-0">
-                    <CardTitle className="text-lg leading-tight truncate">{app.data.name}</CardTitle>
-                    <CardDescription className="text-sm">{app.data.developer}</CardDescription>
+          {
+            latestApps.map((app) => (
+              <Card
+                key={app.slug}
+                className="hover:shadow-lg transition-shadow"
+              >
+                <CardHeader className="pb-4">
+                  <div class="flex items-start gap-3">
+                    <img
+                      src={app.data.icon}
+                      alt={`${app.data.name} icon`}
+                      class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+                    />
+                    <div class="flex-1 min-w-0">
+                      <CardTitle className="text-lg leading-tight truncate">
+                        {app.data.name}
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        {app.data.developer}
+                      </CardDescription>
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
-                  {app.data.description}
-                </p>
+                </CardHeader>
+                <CardContent>
+                  <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
+                    {app.data.description}
+                  </p>
 
-                <div class="flex items-center justify-between">
-                  <div class="text-xs text-muted-foreground">
-                    Updated {app.data.lastUpdated.toLocaleDateString()}
+                  <div class="flex items-center justify-between">
+                    <div class="text-xs text-muted-foreground">
+                      Updated {app.data.lastUpdated.toLocaleDateString()}
+                    </div>
+                    <a href={`/apps/${app.slug}`}>
+                      <Button size="sm">View App</Button>
+                    </a>
                   </div>
-                  <a href={`/apps/${app.slug}`}>
-                    <Button size="sm">View App</Button>
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))
+          }
         </div>
       </section>
 
       <!-- Featured Sources Section -->
       <section class="mb-12">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="scroll-m-20 text-3xl font-semibold tracking-tight">Featured Sources</h2>
+          <h2 class="scroll-m-20 text-3xl font-semibold tracking-tight">
+            Featured Sources
+          </h2>
           <a href="/sources">
             <Button variant="outline">View All Sources</Button>
           </a>
         </div>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {featuredSources.map(source => (
-            <Card key={source.slug} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div class="flex items-start gap-3">
-                  {source.data.icon ? (
-                    <img 
-                      src={source.data.icon} 
-                      alt={`${source.data.name} icon`}
-                      class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
-                    />
-                  ) : (
-                    <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <span class="text-lg font-bold text-primary">
-                        {source.data.name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 mb-1">
-                      <CardTitle className="text-lg leading-tight">{source.data.name}</CardTitle>
-                      {source.data.verified && (
-                        <Badge variant="default" className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                          ✓ Verified
-                        </Badge>
-                      )}
-                    </div>
-                    <CardDescription className="text-sm">by {source.data.maintainer}</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
-                  {source.data.description}
-                </p>
 
-                <div class="flex items-center justify-between">
-                  <div class="text-xs text-muted-foreground">
-                    {source.data.category}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {
+            featuredSources.map((source) => (
+              <Card
+                key={source.slug}
+                className="hover:shadow-lg transition-shadow"
+              >
+                <CardHeader>
+                  <div class="flex items-start gap-3">
+                    {source.data.icon ? (
+                      <img
+                        src={source.data.icon}
+                        alt={`${source.data.name} icon`}
+                        class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <span class="text-lg font-bold text-primary">
+                          {source.data.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1">
+                        <CardTitle className="text-lg leading-tight">
+                          {source.data.name}
+                        </CardTitle>
+                        {source.data.verified && (
+                          <Badge
+                            variant="default"
+                            className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          >
+                            ✓ Verified
+                          </Badge>
+                        )}
+                      </div>
+                      <CardDescription className="text-sm">
+                        by {source.data.maintainer}
+                      </CardDescription>
+                    </div>
                   </div>
-                  <div class="flex gap-2">
-                    <a href={`/sources/${source.slug}`}>
-                      <Button size="sm" variant="outline">Details</Button>
-                    </a>
-                    <Button 
-                      size="sm" 
-                      onClick={`navigator.clipboard.writeText('${source.data.url}'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy URL', 2000)`}
-                    >
-                      Copy URL
-                    </Button>
+                </CardHeader>
+                <CardContent>
+                  <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
+                    {source.data.description}
+                  </p>
+
+                  <div class="flex items-center justify-between">
+                    <div class="text-xs text-muted-foreground">
+                      {source.data.category}
+                    </div>
+                    <div class="flex gap-2">
+                      <a href={`/sources/${source.slug}`}>
+                        <Button size="sm" variant="outline">
+                          Details
+                        </Button>
+                      </a>
+                      <Button
+                        size="sm"
+                        onClick={`navigator.clipboard.writeText('${source.data.url}'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy URL', 2000)`}
+                      >
+                        Copy URL
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))
+          }
         </div>
       </section>
     </div>
@@ -236,36 +294,75 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
       <div class="container mx-auto px-4 py-12">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 class="font-semibold mb-4">AltStore Catalog</h3>
+            <h3 class="font-semibold mb-4">Ascend</h3>
             <p class="text-sm text-muted-foreground mb-4">
-              Community-maintained catalog of apps and sources for AltStore & AltStore PAL.
+              Community-maintained catalog of apps and sources for AltStore &
+              AltStore PAL.
             </p>
             <div class="flex gap-2">
-              <Badge variant="outline" className="text-xs">{totalApps} Apps</Badge>
-              <Badge variant="outline" className="text-xs">{totalSources} Sources</Badge>
+              <Badge variant="outline" className="text-xs"
+                >{totalApps} Apps</Badge
+              >
+              <Badge variant="outline" className="text-xs"
+                >{totalSources} Sources</Badge
+              >
             </div>
           </div>
 
           <div>
             <h4 class="font-semibold mb-4">Browse</h4>
             <ul class="space-y-2 text-sm text-muted-foreground">
-              <li><a href="/apps" class="hover:text-foreground transition-colors">All Apps</a></li>
-              <li><a href="/sources" class="hover:text-foreground transition-colors">All Sources</a></li>
-              <li><a href="/apps?category=Games" class="hover:text-foreground transition-colors">Games</a></li>
-              <li><a href="/apps?category=Utilities" class="hover:text-foreground transition-colors">Utilities</a></li>
+              <li>
+                <a href="/apps" class="hover:text-foreground transition-colors"
+                  >All Apps</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/sources"
+                  class="hover:text-foreground transition-colors">All Sources</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/apps?category=Games"
+                  class="hover:text-foreground transition-colors">Games</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/apps?category=Utilities"
+                  class="hover:text-foreground transition-colors">Utilities</a
+                >
+              </li>
             </ul>
           </div>
 
           <div>
             <h4 class="font-semibold mb-4">Resources</h4>
             <ul class="space-y-2 text-sm text-muted-foreground">
-              <li><a href="https://altstore.io" target="_blank" class="hover:text-foreground transition-colors">AltStore Official</a></li>
-              <li><a href="https://faq.altstore.io" target="_blank" class="hover:text-foreground transition-colors">FAQ</a></li>
+              <li>
+                <a
+                  href="https://altstore.io"
+                  target="_blank"
+                  class="hover:text-foreground transition-colors"
+                  >AltStore Official</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://faq.altstore.io"
+                  target="_blank"
+                  class="hover:text-foreground transition-colors">FAQ</a
+                >
+              </li>
             </ul>
           </div>
         </div>
 
-        <div class="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
+        <div
+          class="mt-8 pt-8 border-t text-center text-sm text-muted-foreground"
+        >
           <p>Made with ❤️ by airone01.</p>
           <p class="mt-2">
             Not affiliated with AltStore LLC, Apple Inc., or any app developers.

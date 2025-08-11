@@ -1,40 +1,39 @@
 ---
 import { getCollection } from "astro:content";
+import Header from "@/components/Header.astro";
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import { SourceAddButton } from "@/components/source-add-button";
+import { AddSourceModal } from "@/components/add-source-modal";
 import "@/styles/global.css";
 
 const sources = await getCollection("sources");
 const sortedSources = sources.sort(
-	(a, b) => b.data.lastUpdated.getTime() - a.data.lastUpdated.getTime(),
+  (a, b) => b.data.lastUpdated.getTime() - a.data.lastUpdated.getTime(),
 );
 
 // Group sources by category
 const sourcesByCategory = sortedSources.reduce(
-	(acc, source) => {
-		const category = source.data.category;
-		if (!acc[category]) {
-			acc[category] = [];
-		}
-		acc[category].push(source);
-		return acc;
-	},
-	{} as Record<string, typeof sources>,
+  (acc, source) => {
+    const category = source.data.category;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(source);
+    return acc;
+  },
+  {} as Record<string, typeof sources>,
 );
 
 const categories = Object.keys(sourcesByCategory).sort();
-// const totalApps = sources.reduce(
-// 	(sum, source) => sum + source.data.appCount,
-// 	0,
-// );
 const totalApps = 999;
 const verifiedSources = sources.filter((source) => source.data.verified).length;
 ---
@@ -45,60 +44,60 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>Sources - AltStore Catalog</title>
-    <meta name="description" content="Browse sources for AltStore and AltStore PAL" />
+    <title>Sources - Ascend</title>
+    <meta
+      name="description"
+      content="Browse sources for AltStore and AltStore PAL"
+    />
   </head>
 
   <body class="h-full min-h-screen">
-    <AuroraBackground children={[]} className="h-full w-full top-0 left-0 fixed -z-10" />
-    
+    <AuroraBackground
+      children={[]}
+      className="h-full w-full top-0 left-0 fixed -z-10"
+    />
+
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
-      <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <a href="/" class="text-xl font-bold">AltStore Catalog</a>
-          <div class="flex gap-2">
-            <a href="/apps">
-              <Badge variant="outline">Apps</Badge>
-            </a>
-            <a href="/sources">
-              <Badge variant="default">Sources</Badge>
-            </a>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <Header currentPath="sources" />
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
       <div class="mb-8">
-        <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight mb-4">Sources</h1>
+        <div class="flex items-center justify-between mb-4">
+          <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight">
+            Sources
+          </h1>
+          <Button id="add-custom-source-btn" variant="outline">
+            + Add Custom Source
+          </Button>
+        </div>
         <p class="text-xl text-muted-foreground mb-6">
-          Discover and add sources to your AltStore or AltStore PAL. Sources are collections of apps curated by developers and communities.
+          Discover and add sources to your AltStore or AltStore PAL. Sources are
+          collections of apps curated by developers and communities.
         </p>
 
         <!-- Stats -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <div class="text-2xl font-bold">{sources.length}</div>
               <p class="text-xs text-muted-foreground">Total Sources</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <div class="text-2xl font-bold">{totalApps}</div>
               <p class="text-xs text-muted-foreground">Total Apps</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <div class="text-2xl font-bold">{verifiedSources}</div>
               <p class="text-xs text-muted-foreground">Verified Sources</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <div class="text-2xl font-bold">{categories.length}</div>
               <p class="text-xs text-muted-foreground">Categories</p>
             </CardContent>
@@ -106,83 +105,119 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
         </div>
       </div>
 
+      <!-- Modal Container -->
+      <div id="modal-container"></div>
+
       <!-- Sources by Category -->
-      {categories.map(category => (
-        <section class="mb-12">
-          <h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6">{category}</h2>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {sourcesByCategory[category].map(source => (
-              <Card key={source.slug} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div class="flex items-start gap-3">
-                    {source.data.icon && (
-                      <img 
-                        src={source.data.icon} 
-                        alt={`${source.data.name} icon`}
-                        class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
-                      />
-                    )}
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 mb-1">
-                        <CardTitle className="text-lg leading-tight">{source.data.name}</CardTitle>
-                        {source.data.verified && (
-                          <Badge variant="default" className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                            ✓ Verified
+      {
+        categories.map((category) => (
+          <section class="mb-12">
+            <h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6">
+              {category}
+            </h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {sourcesByCategory[category].map((source) => (
+                <Card
+                  key={source.slug}
+                  className="hover:shadow-lg transition-shadow"
+                >
+                  <CardHeader>
+                    <div class="flex items-start gap-3">
+                      {source.data.icon ? (
+                        <img
+                          src={source.data.icon}
+                          alt={`${source.data.name} icon`}
+                          class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div
+                          class="w-12 h-12 rounded-xl object-cover flex-shrink-0 border relative
+                            before:content-[''] before:absolute before:left-1/2 before:top-1/2 before:w-full before:h-px before:bg-border before:rotate-45 before:-translate-x-1/2 before:-translate-y-1/2
+                            after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-full after:h-px after:bg-border after:-rotate-45 after:-translate-x-1/2 after:-translate-y-1/2"
+                        />
+                      )}
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                          <CardTitle className="text-lg leading-tight">
+                            {source.data.name}
+                          </CardTitle>
+                          {source.data.verified && (
+                            <Badge
+                              variant="default"
+                              className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                            >
+                              ✓ Verified
+                            </Badge>
+                          )}
+                        </div>
+                        <CardDescription className="text-sm">
+                          by {source.data.maintainer}
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p class="text-sm text-muted-foreground mb-4 line-clamp-3">
+                      {source.data.description}
+                    </p>
+
+                    {source.data.tags && (
+                      <div class="flex flex-wrap gap-1 mb-4">
+                        {source.data.tags.slice(0, 3).map((tag) => (
+                          <Badge
+                            key={tag}
+                            variant="secondary"
+                            className="text-xs"
+                          >
+                            {tag}
+                          </Badge>
+                        ))}
+                        {source.data.tags.length > 3 && (
+                          <Badge variant="secondary" className="text-xs">
+                            +{source.data.tags.length - 3}
                           </Badge>
                         )}
                       </div>
-                      <CardDescription className="text-sm">by {source.data.maintainer}</CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p class="text-sm text-muted-foreground mb-4 line-clamp-3">
-                    {source.data.description}
-                  </p>
+                    )}
 
-                  {source.data.tags && (
-                    <div class="flex flex-wrap gap-1 mb-4">
-                      {source.data.tags.slice(0, 3).map(tag => (
-                        <Badge key={tag} variant="secondary" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                      {source.data.tags.length > 3 && (
-                        <Badge variant="secondary" className="text-xs">
-                          +{source.data.tags.length - 3}
-                        </Badge>
-                      )}
+                    <div class="flex items-center justify-between">
+                      <div class="text-xs text-muted-foreground">
+                        Updated {source.data.lastUpdated.toLocaleDateString()}
+                      </div>
+                      <div class="flex gap-2">
+                        <a href={`/sources/${source.slug}`}>
+                          <Button size="sm" variant="outline">
+                            Details
+                          </Button>
+                        </a>
+                        <SourceAddButton
+                          client:load
+                          sourceName={source.data.name}
+                          sourceUrl={source.data.url}
+                          size="sm"
+                          showLabel={false}
+                        />
+                      </div>
                     </div>
-                  )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        ))
+      }
 
-                  <div class="flex items-center justify-between">
-                    <div class="text-xs text-muted-foreground">
-                      Updated {source.data.lastUpdated.toLocaleDateString()}
-                    </div>
-                    <div class="flex gap-2">
-                      <a href={`/sources/${source.slug}`}>
-                        <Button size="sm" variant="outline">Details</Button>
-                      </a>
-                      <Button 
-                        size="sm" 
-                        onClick={`navigator.clipboard.writeText('${source.data.url}'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy URL', 2000)`}
-                      >
-                        Copy URL
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+      {
+        sources.length === 0 && (
+          <div class="text-center py-12">
+            <h3 class="text-lg font-semibold mb-2">No sources found</h3>
+            <p class="text-muted-foreground mb-4">
+              Get started by adding a custom source!
+            </p>
+            <Button id="add-source-empty">Add Custom Source</Button>
           </div>
-        </section>
-      ))}
-
-      {sources.length === 0 && (
-        <div class="text-center py-12">
-          <h3 class="text-lg font-semibold mb-2">No sources found</h3>
-        </div>
-      )}
+        )
+      }
     </main>
 
     <!-- Footer -->
@@ -191,15 +226,49 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
         <div class="text-center text-sm text-muted-foreground">
           <p>Community-maintained catalog for AltStore & AltStore PAL</p>
           <p class="mt-2">
-            <a href="/" class="hover:text-foreground transition-colors">Home</a> • 
-            <a href="/apps" class="hover:text-foreground transition-colors ml-1">Apps</a> • 
-            <a href="/sources" class="hover:text-foreground transition-colors ml-1">Sources</a>
+            <a href="/" class="hover:text-foreground transition-colors">Home</a>
+            •
+            <a href="/apps" class="hover:text-foreground transition-colors ml-1"
+              >Apps</a
+            > •
+            <a
+              href="/sources"
+              class="hover:text-foreground transition-colors ml-1">Sources</a
+            >
           </p>
         </div>
       </div>
     </footer>
   </body>
 </html>
+
+<script>
+  import { AddSourceModal } from "@/components/add-source-modal";
+  import React from "react";
+  import ReactDOM from "react-dom/client";
+
+  // Setup modal functionality
+  document.addEventListener("DOMContentLoaded", () => {
+    const modalContainer = document.getElementById("modal-container");
+    const addSourceBtn = document.getElementById("add-custom-source-btn");
+    const addSourceEmpty = document.getElementById("add-source-empty");
+
+    if (modalContainer && (addSourceBtn || addSourceEmpty)) {
+      const root = ReactDOM.createRoot(modalContainer);
+
+      const showModal = () => {
+        root.render(
+          React.createElement(AddSourceModal, {
+            onClose: () => root.unmount(),
+          }),
+        );
+      };
+
+      addSourceBtn?.addEventListener("click", showModal);
+      addSourceEmpty?.addEventListener("click", showModal);
+    }
+  });
+</script>
 
 <style>
   .line-clamp-3 {

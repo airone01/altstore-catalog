@@ -1,11 +1,11 @@
 ---
 import { getCollection } from "astro:content";
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,9 +18,9 @@ const sources = await getCollection("sources");
 
 // Sort apps by priority, then by last updated
 const sortedApps = apps.sort((a, b) => {
-	const priorityDiff = (b.data.priority || 0) - (a.data.priority || 0);
-	if (priorityDiff !== 0) return priorityDiff;
-	return b.data.lastUpdated.getTime() - a.data.lastUpdated.getTime();
+  const priorityDiff = (b.data.priority || 0) - (a.data.priority || 0);
+  if (priorityDiff !== 0) return priorityDiff;
+  return b.data.lastUpdated.getTime() - a.data.lastUpdated.getTime();
 });
 
 // Get featured apps
@@ -28,282 +28,339 @@ const featuredApps = sortedApps.filter((app) => app.data.featured);
 
 // Group apps by category
 const appsByCategory = sortedApps.reduce(
-	(acc, app) => {
-		const category = app.data.category;
-		if (!acc[category]) {
-			acc[category] = [];
-		}
-		acc[category].push(app);
-		return acc;
-	},
-	{} as Record<string, typeof apps>,
+  (acc, app) => {
+    const category = app.data.category;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(app);
+    return acc;
+  },
+  {} as Record<string, typeof apps>,
 );
 
 const categories = Object.keys(appsByCategory).sort();
 
 // Convert apps and sources to search format
 const searchApps = apps.map((app) => ({
-	type: "app" as const,
-	slug: app.slug,
-	title: app.data.name,
-	description: app.data.description,
-	developer: app.data.developer,
-	category: app.data.category,
-	tags: app.data.tags,
-	icon: app.data.icon,
-	verified: app.data.verified,
-	url: `/apps/${app.slug}`,
+  type: "app" as const,
+  slug: app.slug,
+  title: app.data.name,
+  description: app.data.description,
+  developer: app.data.developer,
+  category: app.data.category,
+  tags: app.data.tags,
+  icon: app.data.icon,
+  verified: app.data.verified,
+  url: `/apps/${app.slug}`,
 }));
 
 const searchSources = sources.map((source) => ({
-	type: "source" as const,
-	slug: source.slug,
-	title: source.data.name,
-	description: source.data.description,
-	maintainer: source.data.maintainer,
-	category: source.data.category,
-	tags: source.data.tags,
-	icon: source.data.icon,
-	verified: source.data.verified,
-	url: `/sources/${source.slug}`,
+  type: "source" as const,
+  slug: source.slug,
+  title: source.data.name,
+  description: source.data.description,
+  maintainer: source.data.maintainer,
+  category: source.data.category,
+  tags: source.data.tags,
+  icon: source.data.icon,
+  verified: source.data.verified,
+  url: `/sources/${source.slug}`,
 }));
 
 // Format file size
 const formatSize = (size: string) => {
-	return size.replace(/(\d+\.?\d*)\s*(MB|GB|KB)/gi, (match, num, unit) => {
-		return `${Number.parseFloat(num).toFixed(1)} ${unit.toUpperCase()}`;
-	});
+  return size.replace(/(\d+\.?\d*)\s*(MB|GB|KB)/gi, (match, num, unit) => {
+    return `${Number.parseFloat(num).toFixed(1)} ${unit.toUpperCase()}`;
+  });
 };
 ---
 
 <html lang="en" class="h-full">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Apps - AltStore Catalog</title>
-		<meta name="description" content="Browse apps for AltStore and AltStore PAL" />
-	</head>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Apps - Ascend</title>
+    <meta
+      name="description"
+      content="Browse apps for AltStore and AltStore PAL"
+    />
+  </head>
 
-	<body class="h-full min-h-screen">
-		<AuroraBackground children={[]} className="h-full w-full top-0 left-0 fixed -z-10" />
+  <body class="h-full min-h-screen">
+    <AuroraBackground
+      children={[]}
+      className="h-full w-full top-0 left-0 fixed -z-10"
+    />
 
-		<!-- Navigation -->
-		<nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
-			<div class="container mx-auto px-4 py-4 flex items-center justify-between">
-				<div class="flex items-center gap-4">
-					<a href="/" class="text-xl font-bold">AltStore Catalog</a>
-					<div class="flex gap-2">
-						<a href="/apps">
-							<Badge variant="default">Apps</Badge>
-						</a>
-						<a href="/sources">
-							<Badge variant="outline">Sources</Badge>
-						</a>
-					</div>
-				</div>
-			</div>
-		</nav>
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
+      <div
+        class="container mx-auto px-4 py-4 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-4">
+          <a href="/" class="text-xl font-bold">Ascend</a>
+          <div class="flex gap-2">
+            <a href="/apps">
+              <Badge variant="default">Apps</Badge>
+            </a>
+            <a href="/sources">
+              <Badge variant="outline">Sources</Badge>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
 
-		<!-- Main Content -->
-		<main class="container mx-auto px-4 py-8">
-			<div class="mb-8">
-				<h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight mb-4">Apps</h1>
-				<p class="text-xl text-muted-foreground mb-6">
-					Discover amazing iOS apps available through AltStore and AltStore PAL sources.
-				</p>
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight mb-4">
+          Apps
+        </h1>
+        <p class="text-xl text-muted-foreground mb-6">
+          Discover amazing iOS apps available through AltStore and AltStore PAL
+          sources.
+        </p>
 
-				<!-- Search -->
-				<div class="mb-8">
-					<SearchComponent 
-						client:load
-						apps={searchApps}
-						sources={searchSources}
-						placeholder="Search apps and sources..."
-						showFilters={true}
-						maxResults={20}
-					/>
-				</div>
+        <!-- Search -->
+        <div class="mb-8">
+          <SearchComponent
+            client:load
+            apps={searchApps}
+            sources={searchSources}
+            placeholder="Search apps and sources..."
+            showFilters={true}
+            maxResults={20}
+          />
+        </div>
 
-				<!-- Stats -->
-				<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-					<Card>
-						<CardContent className="pt-6">
-							<div class="text-2xl font-bold">{apps.length}</div>
-							<p class="text-xs text-muted-foreground">Total Apps</p>
-						</CardContent>
-					</Card>
-					<Card>
-						<CardContent className="pt-6">
-							<div class="text-2xl font-bold">{featuredApps.length}</div>
-							<p class="text-xs text-muted-foreground">Featured Apps</p>
-						</CardContent>
-					</Card>
-					<Card>
-						<CardContent className="pt-6">
-							<div class="text-2xl font-bold">{apps.filter(app => app.data.verified).length}</div>
-							<p class="text-xs text-muted-foreground">Verified Apps</p>
-						</CardContent>
-					</Card>
-					<Card>
-						<CardContent className="pt-6">
-							<div class="text-2xl font-bold">{categories.length}</div>
-							<p class="text-xs text-muted-foreground">Categories</p>
-						</CardContent>
-					</Card>
-				</div>
-			</div>
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <Card>
+            <CardContent className="pt-6">
+              <div class="text-2xl font-bold">{apps.length}</div>
+              <p class="text-xs text-muted-foreground">Total Apps</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div class="text-2xl font-bold">{featuredApps.length}</div>
+              <p class="text-xs text-muted-foreground">Featured Apps</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div class="text-2xl font-bold">
+                {apps.filter((app) => app.data.verified).length}
+              </div>
+              <p class="text-xs text-muted-foreground">Verified Apps</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div class="text-2xl font-bold">{categories.length}</div>
+              <p class="text-xs text-muted-foreground">Categories</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
-			<!-- Featured Apps -->
-			{featuredApps.length > 0 && (
-				<section class="mb-12">
-					<h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6">Featured Apps</h2>
-					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-						{featuredApps.map(app => (
-							<Card key={app.slug} className="hover:shadow-lg transition-shadow">
-								<CardHeader className="pb-4">
-									<div class="flex items-start gap-3">
-										<img 
-											src={app.data.icon} 
-											alt={`${app.data.name} icon`}
-											class="w-14 h-14 rounded-xl object-cover flex-shrink-0"
-										/>
-										<div class="flex-1 min-w-0">
-											<div class="flex items-center gap-2 mb-1">
-												<CardTitle className="text-lg leading-tight truncate">{app.data.name}</CardTitle>
-												<Badge variant="default" className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-													⭐
-												</Badge>
-											</div>
-											<CardDescription className="text-sm">{app.data.developer}</CardDescription>
-										</div>
-									</div>
-								</CardHeader>
-								<CardContent>
-									<p class="text-sm text-muted-foreground mb-4 line-clamp-2">
-										{app.data.description}
-									</p>
+      <!-- Featured Apps -->
+      {
+        featuredApps.length > 0 && (
+          <section class="mb-12">
+            <h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6">
+              Featured Apps
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredApps.map((app) => (
+                <Card
+                  key={app.slug}
+                  className="hover:shadow-lg transition-shadow"
+                >
+                  <CardHeader className="pb-4">
+                    <div class="flex items-start gap-3">
+                      <img
+                        src={app.data.icon}
+                        alt={`${app.data.name} icon`}
+                        class="w-14 h-14 rounded-xl object-cover flex-shrink-0"
+                      />
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                          <CardTitle className="text-lg leading-tight truncate">
+                            {app.data.name}
+                          </CardTitle>
+                          <Badge
+                            variant="default"
+                            className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                          >
+                            ⭐
+                          </Badge>
+                        </div>
+                        <CardDescription className="text-sm">
+                          {app.data.developer}
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {app.data.description}
+                    </p>
 
-									<div class="flex items-center gap-2 mb-3">
-										<Badge variant="default">{app.data.category}</Badge>
-										{app.data.verified && (
-											<Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-												✓
-											</Badge>
-										)}
-									</div>
+                    <div class="flex items-center gap-2 mb-3">
+                      <Badge variant="default">{app.data.category}</Badge>
+                      {app.data.verified && (
+                        <Badge
+                          variant="outline"
+                          className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                        >
+                          ✓
+                        </Badge>
+                      )}
+                    </div>
 
-									<div class="flex items-center justify-between text-xs text-muted-foreground mb-4">
-										<span>{formatSize(app.data.size)}</span>
-									</div>
+                    <div class="flex items-center justify-between text-xs text-muted-foreground mb-4">
+                      <span>{formatSize(app.data.size)}</span>
+                    </div>
 
-									<div class="flex items-center justify-between">
-										<div class="text-xs text-muted-foreground">
-											Updated {app.data.lastUpdated.toLocaleDateString()}
-										</div>
-										<a href={`/apps/${app.slug}`}>
-											<Button size="sm">View App</Button>
-										</a>
-									</div>
-								</CardContent>
-							</Card>
-						))}
-					</div>
-				</section>
-			)}
+                    <div class="flex items-center justify-between">
+                      <div class="text-xs text-muted-foreground">
+                        Updated {app.data.lastUpdated.toLocaleDateString()}
+                      </div>
+                      <a href={`/apps/${app.slug}`}>
+                        <Button size="sm">View App</Button>
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        )
+      }
 
-			<!-- Apps by Category -->
-			{categories.map(category => (
-				<section class="mb-12">
-					<h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6 capitalize">{category}</h2>
-					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-						{appsByCategory[category].map(app => (
-							<Card key={app.slug} className="hover:shadow-lg transition-shadow">
-								<CardHeader className="pb-4">
-									<div class="flex items-start gap-3">
-										<img 
-											src={app.data.icon} 
-											alt={`${app.data.name} icon`}
-											class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
-										/>
-										<div class="flex-1 min-w-0">
-											<CardTitle className="text-base leading-tight truncate">{app.data.name}</CardTitle>
-											<CardDescription className="text-sm">{app.data.developer}</CardDescription>
-										</div>
-									</div>
-								</CardHeader>
-								<CardContent>
-									<p class="text-sm text-muted-foreground mb-3 line-clamp-2">
-										{app.data.description}
-									</p>
+      <!-- Apps by Category -->
+      {
+        categories.map((category) => (
+          <section class="mb-12">
+            <h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6 capitalize">
+              {category}
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {appsByCategory[category].map((app) => (
+                <Card
+                  key={app.slug}
+                  className="hover:shadow-lg transition-shadow"
+                >
+                  <CardHeader className="pb-4">
+                    <div class="flex items-start gap-3">
+                      <img
+                        src={app.data.icon}
+                        alt={`${app.data.name} icon`}
+                        class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+                      />
+                      <div class="flex-1 min-w-0">
+                        <CardTitle className="text-base leading-tight truncate">
+                          {app.data.name}
+                        </CardTitle>
+                        <CardDescription className="text-sm">
+                          {app.data.developer}
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p class="text-sm text-muted-foreground mb-3 line-clamp-2">
+                      {app.data.description}
+                    </p>
 
-									<div class="flex items-center gap-1 mb-3">
-										{app.data.verified && (
-											<Badge variant="outline" className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-												✓
-											</Badge>
-										)}
-										{app.data.featured && (
-											<Badge variant="outline" className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-												⭐
-											</Badge>
-										)}
-										{app.data.tags && app.data.tags.length > 0 && (
-											<Badge variant="secondary" className="text-xs">
-												{app.data.tags[0]}
-											</Badge>
-										)}
-									</div>
+                    <div class="flex items-center gap-1 mb-3">
+                      {app.data.verified && (
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                        >
+                          ✓
+                        </Badge>
+                      )}
+                      {app.data.featured && (
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                        >
+                          ⭐
+                        </Badge>
+                      )}
+                      {app.data.tags && app.data.tags.length > 0 && (
+                        <Badge variant="secondary" className="text-xs">
+                          {app.data.tags[0]}
+                        </Badge>
+                      )}
+                    </div>
 
-									<div class="flex items-center justify-between text-xs text-muted-foreground mb-3">
-										<span>{formatSize(app.data.size)}</span>
-									</div>
+                    <div class="flex items-center justify-between text-xs text-muted-foreground mb-3">
+                      <span>{formatSize(app.data.size)}</span>
+                    </div>
 
-									<div class="flex items-center justify-between">
-										<div class="text-xs text-muted-foreground">
-											v{app.data.version}
-										</div>
-										<a href={`/apps/${app.slug}`}>
-											<Button size="sm">View</Button>
-										</a>
-									</div>
-								</CardContent>
-							</Card>
-						))}
-					</div>
-				</section>
-			))}
+                    <div class="flex items-center justify-between">
+                      <div class="text-xs text-muted-foreground">
+                        v{app.data.version}
+                      </div>
+                      <a href={`/apps/${app.slug}`}>
+                        <Button size="sm">View</Button>
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        ))
+      }
 
-			{apps.length === 0 && (
-				<div class="text-center py-12">
-					<h3 class="text-lg font-semibold mb-2">No apps found</h3>
-					<p class="text-muted-foreground">Check back later for new additions!</p>
-				</div>
-			)}
-		</main>
+      {
+        apps.length === 0 && (
+          <div class="text-center py-12">
+            <h3 class="text-lg font-semibold mb-2">No apps found</h3>
+            <p class="text-muted-foreground">
+              Check back later for new additions!
+            </p>
+          </div>
+        )
+      }
+    </main>
 
-		<!-- Footer -->
-		<footer class="mt-16 border-t bg-background/50 backdrop-blur-sm">
-			<div class="container mx-auto px-4 py-8">
-				<div class="text-center text-sm text-muted-foreground">
-					<p>Community-maintained catalog for AltStore & AltStore PAL</p>
-					<p class="mt-2">
-						<a href="/" class="hover:text-foreground transition-colors">Home</a> • 
-						<a href="/apps" class="hover:text-foreground transition-colors ml-1">Apps</a> • 
-						<a href="/sources" class="hover:text-foreground transition-colors ml-1">Sources</a>
-					</p>
-				</div>
-			</div>
-		</footer>
-	</body>
+    <!-- Footer -->
+    <footer class="mt-16 border-t bg-background/50 backdrop-blur-sm">
+      <div class="container mx-auto px-4 py-8">
+        <div class="text-center text-sm text-muted-foreground">
+          <p>Community-maintained catalog for AltStore & AltStore PAL</p>
+          <p class="mt-2">
+            <a href="/" class="hover:text-foreground transition-colors">Home</a>
+            •
+            <a href="/apps" class="hover:text-foreground transition-colors ml-1"
+              >Apps</a
+            > •
+            <a
+              href="/sources"
+              class="hover:text-foreground transition-colors ml-1">Sources</a
+            >
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>
 
 <style>
-	.line-clamp-2 {
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-	}
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 </style>
