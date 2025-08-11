@@ -74,14 +74,6 @@ const formatSize = (size: string) => {
 		return `${Number.parseFloat(num).toFixed(1)} ${unit.toUpperCase()}`;
 	});
 };
-
-// Format rating
-const formatRating = (rating?: number) => {
-	if (!rating) return null;
-	const stars =
-		"★".repeat(Math.floor(rating)) + "☆".repeat(5 - Math.floor(rating));
-	return `${stars} ${rating.toFixed(1)}`;
-};
 ---
 
 <html lang="en" class="h-full">
@@ -96,7 +88,7 @@ const formatRating = (rating?: number) => {
 
 	<body class="h-full min-h-screen">
 		<AuroraBackground children={[]} className="h-full w-full top-0 left-0 fixed -z-10" />
-		
+
 		<!-- Navigation -->
 		<nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
 			<div class="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -121,7 +113,7 @@ const formatRating = (rating?: number) => {
 				<p class="text-xl text-muted-foreground mb-6">
 					Discover amazing iOS apps available through AltStore and AltStore PAL sources.
 				</p>
-				
+
 				<!-- Search -->
 				<div class="mb-8">
 					<SearchComponent 
@@ -203,13 +195,7 @@ const formatRating = (rating?: number) => {
 									</div>
 
 									<div class="flex items-center justify-between text-xs text-muted-foreground mb-4">
-										{app.data.rating && (
-											<div class="flex items-center gap-1">
-												<span class="text-yellow-500">{formatRating(app.data.rating)}</span>
-											</div>
-										)}
 										<span>{formatSize(app.data.size)}</span>
-										<span>v{app.data.version}</span>
 									</div>
 
 									<div class="flex items-center justify-between">
@@ -271,9 +257,6 @@ const formatRating = (rating?: number) => {
 									</div>
 
 									<div class="flex items-center justify-between text-xs text-muted-foreground mb-3">
-										{app.data.rating && (
-											<span class="text-yellow-500">{formatRating(app.data.rating)}</span>
-										)}
 										<span>{formatSize(app.data.size)}</span>
 									</div>
 

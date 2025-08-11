@@ -103,14 +103,14 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
                 <div class="flex items-center gap-2 mb-2">
                   <h1 class="scroll-m-20 text-3xl font-extrabold tracking-tight">{source.data.name}</h1>
                   {source.data.verified && (
-                    <Badge variant="default" class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                    <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                       ✓ Verified
                     </Badge>
                   )}
                 </div>
                 <p class="text-lg text-muted-foreground">by {source.data.maintainer}</p>
               </div>
-              
+
               <div class="flex flex-col sm:flex-row gap-2">
                 <Button 
                   size="lg" 
@@ -120,7 +120,7 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
                 </Button>
                 {source.data.website && (
                   <a href={source.data.website} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="lg" class="w-full sm:w-auto">
+                    <Button variant="outline" size="lg" className="w-full sm:w-auto">
                       Visit Website
                     </Button>
                   </a>
@@ -131,37 +131,6 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
             <p class="text-base text-foreground mb-4">{source.data.description}</p>
           </div>
         </div>
-
-        <!-- How to Add This Source -->
-        <Card class="bg-primary/5 border-primary/20">
-          <CardHeader>
-            <CardTitle class="text-lg">How to Add This Source</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 class="font-medium mb-3">AltStore</h4>
-                <ol class="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                  <li>Open AltStore on your device</li>
-                  <li>Tap the "Browse" tab at the bottom</li>
-                  <li>Tap the "+" button in the top-right corner</li>
-                  <li>Paste this URL: <code class="bg-muted px-1 py-0.5 rounded text-xs break-all">{source.data.url}</code></li>
-                  <li>Tap "Add Source"</li>
-                </ol>
-              </div>
-              <div>
-                <h4 class="font-medium mb-3">PAL</h4>
-                <ol class="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                  <li>Open AltStore PAL on your device</li>
-                  <li>Go to the Settings tab</li>
-                  <li>Tap "Add Source"</li>
-                  <li>Paste this URL: <code class="bg-muted px-1 py-0.5 rounded text-xs break-all">{source.data.url}</code></li>
-                  <li>Tap "Add"</li>
-                </ol>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       <div class="grid lg:grid-cols-3 gap-8">
@@ -179,7 +148,7 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
               <CardContent>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {sourceApps.map(app => (
-                    <div key={app.slug} class="flex items-center gap-3 p-3 rounded-lg border hover:bg-accent/50 transition-colors">
+                    <div class="flex items-center gap-3 p-3 rounded-lg border hover:bg-accent/50 transition-colors">
                       <img 
                         src={app.data.icon} 
                         alt={`${app.data.name} icon`}
@@ -190,7 +159,7 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
                         <p class="text-xs text-muted-foreground truncate">{app.data.developer}</p>
                       </div>
                       <a href={`/apps/${app.slug}`}>
-                        <Button size="sm" variant="ghost" class="text-xs">
+                        <Button size="sm" variant="ghost" className="text-xs">
                           View
                         </Button>
                       </a>
@@ -351,7 +320,7 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
                   <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
                     {relatedSource.data.description}
                   </p>
-                  
+
                   <div class="flex items-center justify-between">
                     <Badge variant="outline" className="text-xs">
                       {/* {relatedSource.data.appCount} apps */}

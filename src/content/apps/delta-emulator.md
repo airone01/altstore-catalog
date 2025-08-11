@@ -1,28 +1,43 @@
 ---
 name: "Delta"
 developer: "Riley Testut"
-description: "A powerful Nintendo emulator for iOS that supports multiple console generations"
+description: "Delta is an all-in-one classic video game emulator for non-jailbroken iOS devices."
 icon: "https://upload.wikimedia.org/wikipedia/commons/c/cd/Delta_Emulator_Logo.jpg"
 version: "1.6"
 size: "45.2 MB"
-category: "games"
+category: "entertainment"
 compatibility: "iOS 14.0 or later"
-downloadUrl: "https://github.com/rileytestut/Delta/releases"
-sourceUrl: "https://github.com/rileytestut/Delta"
+downloadUrl: "https://github.com/rileytestut/Delta/releases/download/v1.6/Delta.ipa"
+bundleId: "com.rileytestut.Delta"
+sourceUrl: "https://cdn.altstore.io/file/altstore/apps.json"
+palDownloadUrl: "https://cdn.altstore.io/file/altstore/apps.json"
+repoUrl: "https://github.com/rileytestut/Delta"
 screenshots: [
   "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/ea/93/78/ea937871-99ed-9681-12c5-3bec87ef42c6/70d0e523-e194-4d77-bc3e-ad8e163a4edf_IMG_0205_2.PNG/643x0w.jpg",
   "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/e8/d7/17/e8d717c0-3ffc-33be-ddca-d70dbd4c88a7/63ff8f9e-4aea-4d72-a6b5-4328d1cf6c69_IMG_0207_2.PNG/643x0w.webp"
 ]
 features: [
-  "Support for NES, SNES, N64, GBA, and Nintendo DS games",
-  "Save states and fast forward functionality",
-  "Wireless controller support",
-  "Dropbox sync for save files",
-  "Portrait and landscape orientation support"
+  "Accurate, full speed emulation thanks to mature underlying emulator cores. Support for NES, SNES, N64, GBC, GBA, DS and GENESIS game emulation",
+  "Browse and play your favorite games with a UI designed from the ground up for iOS",
+  "Automatically displays appropriate box art for imported games",
+  "PS4, PS5, Xbox One, Xbox Series X/S and MFi controllers are supported",
+  "Supports for Bluetooth and wired keyboards",
+  "Completely customize button mappings on a per-system, per-controller basis",
+  "Beautiful built-in controller skins for all systems",
+  "Save and load save states for any game from the pause menu",
+  "Automatically makes backup save states to ensure you never lose your progress",
+  "Support for “Quick Saves,” save states that can be quickly saved/loaded with a single button press (requires external controller)",
+  "Fast forwarding is supported",
+  "With Delta Sync on, sync your games, game saves, save states, cheats, controller skins, and controller mappings between devices. Supports Google Drive and Dropbox",
+  "Delta can hold buttons for you. It is easily configurable.",
+  "3D/Haptic Touch support",
+  "Cheats are supported for all systems with Game Genie, (Pro) Action Replay, GameShark, and Code Breaker codes",
 ]
 lastUpdated: 2024-01-15
-rating: 4.8
-tags: ["emulator", "nintendo", "retro", "gaming"]
+tags: ["emulator", "retro", "gaming"]
+verified: true
+featured: true
+priority: 10
 ---
 
 Delta is the ultimate Nintendo emulator for iOS devices. Originally created as a

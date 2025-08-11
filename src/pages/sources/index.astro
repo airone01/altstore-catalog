@@ -76,7 +76,7 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
         <p class="text-xl text-muted-foreground mb-6">
           Discover and add sources to your AltStore or AltStore PAL. Sources are collections of apps curated by developers and communities.
         </p>
-        
+
         <!-- Stats -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card>
@@ -104,35 +104,6 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
             </CardContent>
           </Card>
         </div>
-
-        <!-- How to Add Sources -->
-        <Card className="mb-8 bg-primary/5 border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-lg">How to Add Sources</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="grid md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <h4 class="font-medium mb-2">AltStore</h4>
-                <ol class="list-decimal list-inside space-y-1 text-muted-foreground">
-                  <li>Open AltStore on your device</li>
-                  <li>Tap "Browse" tab</li>
-                  <li>Tap "+" in the top-right corner</li>
-                  <li>Enter the source URL</li>
-                </ol>
-              </div>
-              <div>
-                <h4 class="font-medium mb-2">PAL</h4>
-                <ol class="list-decimal list-inside space-y-1 text-muted-foreground">
-                  <li>Open AltStore PAL on your device</li>
-                  <li>Go to Settings</li>
-                  <li>Tap "Add Source"</li>
-                  <li>Paste the source URL</li>
-                </ol>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       <!-- Sources by Category -->

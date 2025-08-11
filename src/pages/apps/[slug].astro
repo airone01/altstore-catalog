@@ -41,14 +41,6 @@ const formatSize = (size: string) => {
 		return `${Number.parseFloat(num).toFixed(1)} ${unit.toUpperCase()}`;
 	});
 };
-
-// Format rating
-const formatRating = (rating?: number) => {
-	if (!rating) return null;
-	const stars =
-		"★".repeat(Math.floor(rating)) + "☆".repeat(5 - Math.floor(rating));
-	return `${stars} ${rating.toFixed(1)}`;
-};
 ---
 
 <html lang="en" class="h-full">
@@ -105,7 +97,7 @@ const formatRating = (rating?: number) => {
                 class="w-32 h-32 md:w-40 md:h-40 rounded-3xl object-cover shadow-lg"
               />
             </div>
-            
+
             <div class="flex-1 min-w-0">
               <div class="mb-4">
                 <div class="flex flex-wrap items-center gap-2 mb-2">
@@ -125,16 +117,10 @@ const formatRating = (rating?: number) => {
                 <p class="text-base text-foreground">{app.data.description}</p>
               </div>
 
-              <!-- Rating & Stats -->
+              <!-- Stats -->
               <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-muted-foreground">
-                {app.data.rating && (
-                  <div class="flex items-center gap-1">
-                    <span class="text-yellow-500">{formatRating(app.data.rating)}</span>
-                  </div>
-                )}
                 <span>{formatSize(app.data.size)}</span>
                 <span>v{app.data.version}</span>
-                {app.data.downloads && <span>{app.data.downloads} downloads</span>}
               </div>
 
               <!-- Category & Tags -->
@@ -162,6 +148,8 @@ const formatRating = (rating?: number) => {
                   appName={app.data.name}
                   downloadUrl={app.data.downloadUrl}
                   palDownloadUrl={app.data.palDownloadUrl}
+                  sourceUrl={app.data.sourceUrl}
+                  bundleId={app.data.bundleId}
                   size="lg"
                 />
               </CardContent>
@@ -274,15 +262,15 @@ const formatRating = (rating?: number) => {
                   </Button>
                 </a>
               )}
-              
-              {app.data.sourceUrl && (
-                <a href={app.data.sourceUrl} target="_blank" rel="noopener noreferrer" class="block">
+
+              {app.data.repoUrl && (
+                <a href={app.data.repoUrl} target="_blank" rel="noopener noreferrer" class="block">
                   <Button variant="outline" className="w-full" size="sm">
                     Source Code
                   </Button>
                 </a>
               )}
-              
+
               {app.data.appStoreUrl && (
                 <a href={app.data.appStoreUrl} target="_blank" rel="noopener noreferrer" class="block">
                   <Button variant="outline" className="w-full" size="sm">
@@ -290,15 +278,6 @@ const formatRating = (rating?: number) => {
                   </Button>
                 </a>
               )}
-              
-              <Button 
-                variant="outline" 
-                class="w-full" 
-                size="sm"
-                onClick={`navigator.share ? navigator.share({title: '${app.data.name}', text: '${app.data.description}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href)`}
-              >
-                Share App
-              </Button>
             </CardContent>
           </Card>
 
@@ -357,7 +336,7 @@ const formatRating = (rating?: number) => {
                   <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
                     {relatedApp.data.description}
                   </p>
-                  
+
                   <div class="flex items-center justify-between">
                     <div class="text-xs text-muted-foreground">
                       v{relatedApp.data.version}
@@ -378,7 +357,7 @@ const formatRating = (rating?: number) => {
     <footer class="mt-16 border-t bg-background/50 backdrop-blur-sm">
       <div class="container mx-auto px-4 py-8">
         <div class="text-center text-sm text-muted-foreground">
-          <p>Community-maintained catalog for AltStore & AltStore PAL</p>
+          <p>Community-maintained catalog for AltStore & PAL</p>
           <p class="mt-2">
             <a href="/" class="hover:text-foreground transition-colors">Home</a> • 
             <a href="/apps" class="hover:text-foreground transition-colors ml-1">Apps</a> • 

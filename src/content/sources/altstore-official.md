@@ -2,7 +2,7 @@
 name: "AltStore (Official)"
 maintainer: "AltStore Team"
 description: "The official AltStore source featuring Delta, Clip, and other apps by Riley Testut"
-url: "https://apps.altstore.io"
+url: "https://cdn.altstore.io/file/altstore/apps.json"
 icon: "https://avatars.githubusercontent.com/u/83258927"
 website: "https://altstore.io"
 category: "Official"

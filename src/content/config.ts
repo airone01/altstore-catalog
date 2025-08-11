@@ -25,15 +25,17 @@ const appsCollection = defineCollection({
 		downloadUrl: z.string().url(),
 		lastUpdated: z.date(),
 
+		// Enhanced installation fields
+		bundleId: z.string().optional(), // App bundle identifier (e.g., com.rileytestut.Delta)
+		sourceUrl: z.string().url().optional(), // Source JSON URL containing this app
+
 		// Optional fields
 		palDownloadUrl: z.string().url().optional(), // For AltStore PAL
-		sourceUrl: z.string().url().optional(), // GitHub/source code
+		repoUrl: z.string().url().optional(), // GitHub/source code repository
 		appStoreUrl: z.string().url().optional(), // Official App Store link
 		website: z.string().url().optional(), // App's official website
 		screenshots: z.array(z.string().url()).optional(),
 		features: z.array(z.string()).optional(),
-		downloads: z.string().optional(), // e.g., "10K+", "1M+"
-		rating: z.number().min(0).max(5).optional(),
 		tags: z.array(z.string()).optional(),
 		featured: z.boolean().default(false), // For homepage highlighting
 		priority: z.number().default(0), // For sorting (higher = more prominent)
