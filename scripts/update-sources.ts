@@ -6,7 +6,8 @@ import path from 'node:path';
 const SOURCE_URLS = [
   'https://cdn.altstore.io/file/altstore/apps.json',
   'https://raw.githubusercontent.com/Aidoku/Aidoku/altstore/apps.json',
-  'https://adp.salupovteam.com/altrepo.json'
+  'https://adp.salupovteam.com/altrepo.json',
+  'https://altstore.ignitedemulator.com'
 ];
 
 async function updateSources() {
@@ -36,7 +37,11 @@ ${source.icon ? `icon: "${source.icon}"` : ''}
 ${source.website ? `website: "${source.website}"` : ''}
 category: "${source.category}"
 verified: ${source.verified}
-lastUpdated: ${source.lastUpdated.toISOString().split('T')[0]}
+lastUpdated: ${
+  source.lastUpdated instanceof Date && !Number.isNaN(source.lastUpdated.getTime())
+    ? source.lastUpdated.toISOString().split('T')[0]
+    : '1970-01-01'
+}
 tags: ${JSON.stringify(source.tags)}
 appCount: ${source.appCount}
 ---
@@ -65,15 +70,19 @@ name: "${app.name}"
 developer: "${app.developer}"
 description: "${app.description.replace(/"/g, '\\"')}"
 icon: "${app.icon}"
-version: "${app.version}"
-size: "${app.size}"
+version: "${app.version ?? '?'}"
+size: "${app.size ?? 0}"
 category: "${app.category}"
 compatibility: "${app.compatibility}"
-downloadUrl: "${app.downloadUrl}"
+downloadUrl: "${app.downloadUrl ?? 'https://there.was.no.download.url'}"
 bundleId: "${app.bundleId}"
 sourceUrl: "${app.sourceUrl}"
 ${app.screenshots ? `screenshots: ${JSON.stringify(app.screenshots)}` : ''}
-lastUpdated: ${app.lastUpdated.toISOString().split('T')[0]}
+lastUpdated: ${
+  app.lastUpdated instanceof Date && !Number.isNaN(app.lastUpdated.getTime())
+    ? app.lastUpdated.toISOString().split('T')[0]
+    : '1970-01-01'
+}
 tags: ${JSON.stringify(app.tags)}
 verified: ${app.verified}
 featured: ${app.featured}
