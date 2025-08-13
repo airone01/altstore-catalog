@@ -1,0 +1,104 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { SourceAddButton } from "@/components/source-add-button";
+
+interface Props {
+  source: CollectionEntry<"sources">;
+}
+
+const { source } = Astro.props as Props;
+---
+
+<Card className="hover:shadow-lg transition-shadow">
+  <CardHeader>
+    <div class="flex items-start gap-3">
+      {
+        source.data.icon ? (
+          <img
+            src={source.data.icon}
+            alt={`${source.data.name} icon`}
+            class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+          />
+        ) : (
+          <div
+            class="w-12 h-12 rounded-xl object-cover flex-shrink-0 border relative
+            before:content-[''] before:absolute before:left-1/2 before:top-1/2 before:w-full before:h-px before:bg-border before:rotate-45 before:-translate-x-1/2 before:-translate-y-1/2
+            after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-full after:h-px after:bg-border after:-rotate-45 after:-translate-x-1/2 after:-translate-y-1/2"
+          />
+        )
+      }
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1">
+          <CardTitle className="text-lg leading-tight">
+            {source.data.name}
+          </CardTitle>
+          {
+            source.data.verified && (
+              <Badge
+                variant="default"
+                className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+              >
+                ✓ Verified
+              </Badge>
+            )
+          }
+        </div>
+        <p class="text-sm text-muted-foreground">
+          by {source.data.maintainer}
+        </p>
+      </div>
+    </div>
+  </CardHeader>
+  <CardContent>
+    <p class="text-sm text-muted-foreground mb-4 line-clamp-3">
+      {source.data.description}
+    </p>
+
+    {
+      source.data.tags && (
+        <div class="flex flex-wrap gap-1 mb-4">
+          {source.data.tags.slice(0, 3).map((tag) => (
+            <Badge key={tag} variant="secondary" className="text-xs">
+              {tag}
+            </Badge>
+          ))}
+          {source.data.tags.length > 3 && (
+            <Badge variant="secondary" className="text-xs">
+              +{source.data.tags.length - 3}
+            </Badge>
+          )}
+        </div>
+      )
+    }
+
+    <div class="flex items-center justify-between">
+      <div class="text-xs text-muted-foreground">
+        Updated {source.data.lastUpdated.toLocaleDateString()}
+      </div>
+      <div class="flex gap-2">
+        <a href={`/sources/${source.slug}`}>
+          <Button size="sm" variant="outline"> Details </Button>
+        </a>
+        <SourceAddButton
+          client:load
+          sourceName={source.data.name}
+          sourceUrl={source.data.url}
+          size="sm"
+          showLabel={false}
+        />
+      </div>
+    </div>
+  </CardContent>
+</Card>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

@@ -1,16 +1,11 @@
 ---
 import { getCollection } from "astro:content";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { SearchComponent } from "@/components/search";
+import AppCard from "@/components/AppCard.astro";
 import "@/styles/global.css";
 
 const apps = await getCollection("apps");
@@ -177,66 +172,7 @@ const formatSize = (size: string) => {
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredApps.map((app) => (
-                <Card
-                  key={app.slug}
-                  className="hover:shadow-lg transition-shadow"
-                >
-                  <CardHeader className="pb-4">
-                    <div class="flex items-start gap-3">
-                      <img
-                        src={app.data.icon}
-                        alt={`${app.data.name} icon`}
-                        class="w-14 h-14 rounded-xl object-cover flex-shrink-0"
-                      />
-                      <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 mb-1">
-                          <CardTitle className="text-lg leading-tight truncate">
-                            {app.data.name}
-                          </CardTitle>
-                          <Badge
-                            variant="default"
-                            className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                          >
-                            ⭐
-                          </Badge>
-                        </div>
-                        <CardDescription className="text-sm">
-                          {app.data.developer}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
-                      {app.data.description}
-                    </p>
-
-                    <div class="flex items-center gap-2 mb-3">
-                      <Badge variant="default">{app.data.category}</Badge>
-                      {app.data.verified && (
-                        <Badge
-                          variant="outline"
-                          className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                        >
-                          ✓
-                        </Badge>
-                      )}
-                    </div>
-
-                    <div class="flex items-center justify-between text-xs text-muted-foreground mb-4">
-                      <span>{formatSize(app.data.size)}</span>
-                    </div>
-
-                    <div class="flex items-center justify-between">
-                      <div class="text-xs text-muted-foreground">
-                        Updated {app.data.lastUpdated.toLocaleDateString()}
-                      </div>
-                      <a href={`/apps/${app.slug}`}>
-                        <Button size="sm">View App</Button>
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
+                <AppCard app={app} />
               ))}
             </div>
           </section>
@@ -252,70 +188,7 @@ const formatSize = (size: string) => {
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {appsByCategory[category].map((app) => (
-                <Card
-                  key={app.slug}
-                  className="hover:shadow-lg transition-shadow"
-                >
-                  <CardHeader className="pb-4">
-                    <div class="flex items-start gap-3">
-                      <img
-                        src={app.data.icon}
-                        alt={`${app.data.name} icon`}
-                        class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
-                      />
-                      <div class="flex-1 min-w-0">
-                        <CardTitle className="text-base leading-tight truncate">
-                          {app.data.name}
-                        </CardTitle>
-                        <CardDescription className="text-sm">
-                          {app.data.developer}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p class="text-sm text-muted-foreground mb-3 line-clamp-2">
-                      {app.data.description}
-                    </p>
-
-                    <div class="flex items-center gap-1 mb-3">
-                      {app.data.verified && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                        >
-                          ✓
-                        </Badge>
-                      )}
-                      {app.data.featured && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                        >
-                          ⭐
-                        </Badge>
-                      )}
-                      {app.data.tags && app.data.tags.length > 0 && (
-                        <Badge variant="secondary" className="text-xs">
-                          {app.data.tags[0]}
-                        </Badge>
-                      )}
-                    </div>
-
-                    <div class="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                      <span>{formatSize(app.data.size)}</span>
-                    </div>
-
-                    <div class="flex items-center justify-between">
-                      <div class="text-xs text-muted-foreground">
-                        v{app.data.version}
-                      </div>
-                      <a href={`/apps/${app.slug}`}>
-                        <Button size="sm">View</Button>
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
+                <AppCard app={app} compact />
               ))}
             </div>
           </section>
