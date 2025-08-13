@@ -1,6 +1,6 @@
 ---
 name: "Aidoku Source"
-maintainer: "Altstore"
+maintainer: "Aidoku"
 description: "This is the AltStore Source for Aidoku, free and open source manga reader for iOS and iPadOS.
 
 For full details on what's included, check the website: https://aidoku.app/"

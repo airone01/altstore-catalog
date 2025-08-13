@@ -1,5 +1,5 @@
 ---
-name: "AltStore"
+name: "AltStore Official Source"
 maintainer: "AltStore"
 description: "This is the default source for AltStore. You can add additional sources to manage what apps appear in AltStore.
 

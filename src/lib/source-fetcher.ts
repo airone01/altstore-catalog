@@ -130,10 +130,25 @@ export function parseAltStoreSource(source: AltStoreSource, url: string): Parsed
     category = 'Specialized';
   }
   
-  // Extract maintainer from source name or identifier
-  const maintainer = source.identifier?.split('.').reverse()[0] || 
-                     source.name?.split(' ')[0] || 
-                     'Unknown';
+  // Default to Unknown for maintainer to avoid setting "AltStore" for most sources
+  let maintainer = 'Unknown';
+  
+  // Only try to extract maintainer if we can be confident it's not generic
+  if (source.name && !source.name.toLowerCase().includes('altstore')) {
+    const nameParts = source.name.split(' ');
+    if (nameParts.length > 0) {
+      // Look for the first word that looks like a proper name (not generic words)
+      for (const part of nameParts) {
+        if (part.length > 2 && 
+            !['the', 'a', 'an', 'and', 'or', 'for', 'of', 'with', 'source', 'repo', 'team'].includes(part.toLowerCase())) {
+          maintainer = part;
+          break;
+        }
+      }
+    }
+  }
+  
+  // Don't try to extract from identifier as it's usually too generic
   
   // Get most recent update date from apps
   const lastUpdated = source.apps.reduce((latest, app) => {

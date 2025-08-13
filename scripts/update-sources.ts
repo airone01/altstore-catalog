@@ -36,15 +36,34 @@ async function updateSources() {
         `${sourceSlug}.md`
       );
 
-      // Preserve existing overrides and body
+      // Preserve existing overrides, body, and maintainer
       let existingSourceOverridesBlock = '';
       let existingSourceBody = '';
+      let existingMaintainer = '';
       try {
         const existing = await fs.readFile(sourcePath, 'utf8');
         const fmMatch = existing.match(/^---[\s\S]*?---/);
         if (fmMatch) {
           const fm = fmMatch[0];
           existingSourceBody = existing.slice(fm.length).trimStart();
+          
+          // Extract existing maintainer
+          const maintainerMatch = fm.match(/maintainer:\s*"([^"]+)"/);
+          if (maintainerMatch) {
+            const oldMaintainer = maintainerMatch[1];
+            // If the old maintainer is generic or was auto-generated with old logic, don't preserve it
+            // But allow "AltStore" for the actual AltStore source
+            const badMaintainers = ['source', 'repo', 'team', 'apps', 'collection'];
+            const isAltStoreSource = source.name.toLowerCase().includes('altstore') && 
+                                   (source.url.includes('altstore.io') || source.url.includes('cdn.altstore.io'));
+            
+            if (!badMaintainers.includes(oldMaintainer.toLowerCase()) || 
+                (oldMaintainer.toLowerCase() === 'altstore' && isAltStoreSource)) {
+              existingMaintainer = oldMaintainer;
+            }
+          }
+          
+          // Extract existing overrides
           const overridesIdx = fm.indexOf('\noverrides:');
           if (overridesIdx !== -1) {
             existingSourceOverridesBlock = fm.slice(overridesIdx + 1).replace(/\n---$/, '');
@@ -54,7 +73,7 @@ async function updateSources() {
 
       const sourceContent = `---
 name: "${source.name}"
-maintainer: "${source.maintainer}"
+maintainer: "${existingMaintainer || source.maintainer}"
 description: "${(source.description || '').replace(/"/g, '\\"')}"
 url: "${source.url}"
 ${source.icon ? `icon: "${source.icon}"` : ''}
