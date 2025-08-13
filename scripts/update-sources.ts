@@ -4,10 +4,28 @@ import path from 'node:path';
 
 // List of source URLs to fetch
 const SOURCE_URLS = [
-  'https://cdn.altstore.io/file/altstore/apps.json',
-  'https://raw.githubusercontent.com/Aidoku/Aidoku/altstore/apps.json',
-  'https://adp.salupovteam.com/altrepo.json',
-  'https://altstore.ignitedemulator.com'
+  // AltStore team
+  'https://cdn.altstore.io/file/altstore/apps.json', // AltStore official source
+  // Trusted by AltStore team
+  'https://altstore.oatmealdome.me', // OatmealDome’s source
+  'https://alt.getutm.app', // UTM (emulator) official source
+  'https://flyinghead.github.io/flycast-builds/altstore.json', // FlyCast (emulator) official source
+  'https://provenance-emu.com/apps.json', // Provenance (emulator) official source
+  'https://alt.crystall1ne.dev/', // PojavLauncher official source
+  // Unofficials & patches
+  'https://raw.githubusercontent.com/Romain-Pl/ChutSpyroAltSources/refs/heads/main/UnofficialEpicGamesIPASource.json', // Unofficial Epic Games (ChutSpyro patches)
+  // Community-driven (has to be driven by GitHub)
+  'https://raw.githubusercontent.com/Aidoku/Aidoku/altstore/apps.json', // Aidoku official source
+  'https://altstore.ignitedemulator.com', // Ignite (emulator) official source
+  // The rest
+  'https://adp.salupovteam.com/altrepo.json', // Salupov Team's source
+  'https://alt.stux.me/repo.json', // Stux's source
+  'https://peopledrop.app/apps.json', // Alex Tarana's source
+  'https://cdn.squadblast.com/market/marketplace.json', // ULTRAHORSE source
+  'https://get.furaffinity.app/altstore', // FurAffinity source
+  'https://raw.githubusercontent.com/auties00/artemis/refs/heads/main/source_pal.json', // Auties00's source
+  'https://altstore.nuumi.io/source.json', // Nuumi source
+  'https://raw.githubusercontent.com/cbruegg/altstore-source/refs/heads/main/source.json', // cbruegg's PAL source
 ];
 
 async function updateSources() {
@@ -36,10 +54,11 @@ async function updateSources() {
         `${sourceSlug}.md`
       );
 
-      // Preserve existing overrides, body, and maintainer
+      // Preserve existing overrides, body, maintainer, and verified
       let existingSourceOverridesBlock = '';
       let existingSourceBody = '';
       let existingMaintainer = '';
+      let existingVerified: boolean | undefined = undefined;
       try {
         const existing = await fs.readFile(sourcePath, 'utf8');
         const fmMatch = existing.match(/^---[\s\S]*?---/);
@@ -62,6 +81,12 @@ async function updateSources() {
               existingMaintainer = oldMaintainer;
             }
           }
+
+          // Extract existing verified flag
+          const verifiedMatch = fm.match(/verified:\s*(true|false)/);
+          if (verifiedMatch) {
+            existingVerified = verifiedMatch[1] === 'true';
+          }
           
           // Extract existing overrides
           const overridesIdx = fm.indexOf('\noverrides:');
@@ -79,7 +104,7 @@ url: "${source.url}"
 ${source.icon ? `icon: "${source.icon}"` : ''}
 ${source.website ? `website: "${source.website}"` : ''}
 category: "${source.category}"
-verified: ${source.verified}
+verified: ${existingVerified ?? false}
 lastUpdated: ${
   source.lastUpdated instanceof Date && !Number.isNaN(source.lastUpdated.getTime())
     ? source.lastUpdated.toISOString().split('T')[0]
@@ -102,15 +127,20 @@ ${existingSourceBody}`;
           `${appSlug}.md`
         );
 
-        // Preserve existing overrides and body
+        // Preserve existing overrides, body, and verified
         let existingAppOverridesBlock = '';
         let existingAppBody = '';
+        let existingAppVerified: boolean | undefined = undefined;
         try {
           const existing = await fs.readFile(appPath, 'utf8');
           const fmMatch = existing.match(/^---[\s\S]*?---/);
           if (fmMatch) {
             const fm = fmMatch[0];
             existingAppBody = existing.slice(fm.length).trimStart();
+            const verifiedMatch = fm.match(/verified:\s*(true|false)/);
+            if (verifiedMatch) {
+              existingAppVerified = verifiedMatch[1] === 'true';
+            }
             const overridesIdx = fm.indexOf('\noverrides:');
             if (overridesIdx !== -1) {
               existingAppOverridesBlock = fm.slice(overridesIdx + 1).replace(/\n---$/, '');
@@ -138,7 +168,7 @@ lastUpdated: ${
     : '1970-01-01'
 }
 tags: ${JSON.stringify(app.tags)}
-verified: ${app.verified}
+verified: ${existingAppVerified ?? false}
 featured: ${app.featured}
 ${existingAppOverridesBlock ? `${existingAppOverridesBlock}\n` : ''}---
 ${existingAppBody}`;

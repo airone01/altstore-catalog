@@ -15,5 +15,5 @@ sourceUrls: ["https://raw.githubusercontent.com/Aidoku/Aidoku/altstore/apps.json
 lastUpdated: 1970-01-01
 tags: ["open-source"]
 verified: false
-featured: true
+featured: false
 ---

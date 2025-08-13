@@ -81,6 +81,11 @@ export interface ParsedApp {
   featured: boolean;
 }
 
+function removeTrailingCommas(jsonString: string) {
+  // Remove trailing commas before ] or }, because JS is a crybaby
+  return jsonString.replace(/,(\s*[}\]])/g, '$1');
+}
+
 // Fetch and parse AltStore source JSON
 export async function fetchAltStoreSource(url: string): Promise<AltStoreSource | null> {
   try {
@@ -90,8 +95,9 @@ export async function fetchAltStoreSource(url: string): Promise<AltStoreSource |
       return null;
     }
     
-    const data = await response.json();
-    return data as AltStoreSource;
+    const data = await response.text();
+    const easyText= removeTrailingCommas(data);
+    return JSON.parse(easyText) as AltStoreSource;
   } catch (error) {
     console.error('Error fetching source:', error);
     return null;
@@ -173,7 +179,8 @@ export function parseAltStoreSource(source: AltStoreSource, url: string): Parsed
     icon: source.iconURL,
     website: source.website,
     category,
-    verified: category === 'Official',
+    // Verified must be set manually in content files; never infer here
+    verified: false,
     lastUpdated,
     tags,
     appCount: source.apps.length,
@@ -234,7 +241,8 @@ export function parseAltStoreApp(
     screenshots: app.screenshotURLs,
     lastUpdated: new Date(app.versionDate),
     tags,
-    verified: sourceName.toLowerCase().includes('altstore'),
+    // Verified must be set manually in content files; never infer here
+    verified: false,
     featured: false,
   };
 }
