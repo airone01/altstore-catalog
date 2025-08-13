@@ -11,11 +11,5 @@ category: "Official"
 verified: true
 lastUpdated: 1970-01-01
 tags: []
-appCount: 1
+apps: ["aidoku-aidoku-source"]
 ---
-
-This source contains 1 apps and is automatically synced from the official source JSON.
-
-## Apps Available
-
-- **Aidoku** (vundefined) - Skitty

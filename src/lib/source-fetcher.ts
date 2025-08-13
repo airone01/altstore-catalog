@@ -69,7 +69,10 @@ export interface ParsedApp {
   compatibility: string;
   downloadUrl: string;
   bundleId: string;
-  sourceUrl: string;
+  // One or more distribution sources for this app
+  sourceUrls: string[];
+  // Optional canonical/official source URL (e.g., AltStore official)
+  officialSourceUrl?: string;
   palDownloadUrl?: string;
   screenshots?: string[];
   lastUpdated: Date;
@@ -202,7 +205,8 @@ export function parseAltStoreApp(
     compatibility: 'iOS 14.0 or later', // Default, could be extracted from permissions
     downloadUrl: app.downloadURL,
     bundleId: app.bundleIdentifier,
-    sourceUrl,
+    sourceUrls: [sourceUrl],
+    officialSourceUrl: sourceName.toLowerCase().includes('altstore') ? sourceUrl : undefined,
     screenshots: app.screenshotURLs,
     lastUpdated: new Date(app.versionDate),
     tags,

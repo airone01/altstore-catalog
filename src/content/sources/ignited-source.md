@@ -9,11 +9,5 @@ category: "Developer"
 verified: false
 lastUpdated: 1970-01-01
 tags: ["emulation","games"]
-appCount: 1
+apps: ["ignited-ignited-source"]
 ---
-
-This source contains 1 apps and is automatically synced from the official source JSON.
-
-## Apps Available
-
-- **Ignited** (vundefined) - LitRitt

@@ -24,6 +24,23 @@ export async function getStaticPaths() {
 const app = Astro.props;
 const { Content } = await app.render();
 
+// Load sources to determine current distribution status
+const allSources = await getCollection("sources");
+const knownSourceUrls = new Set(allSources.map((s) => s.data.url));
+
+const appSourceUrls: string[] = Array.isArray(app.data.sourceUrls)
+  ? app.data.sourceUrls
+  : app.data.sourceUrl
+    ? [app.data.sourceUrl]
+    : [];
+
+const availableSourceUrls = appSourceUrls.filter((u) => knownSourceUrls.has(u));
+const isOrphaned = availableSourceUrls.length === 0;
+const preferredSourceUrl =
+  app.data.officialSourceUrl && knownSourceUrls.has(app.data.officialSourceUrl)
+    ? app.data.officialSourceUrl
+    : availableSourceUrls[0];
+
 // Get related apps (same category, excluding current)
 const allApps = await getCollection("apps");
 const relatedApps = allApps
@@ -167,23 +184,40 @@ const formatSize = (size: string) => {
           <div class="lg:w-80">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg"
-                  >Install {app.data.name}</CardTitle
-                >
+                <CardTitle className="text-lg">
+                  {
+                    isOrphaned
+                      ? "Not Currently Distributed"
+                      : `Install ${app.data.name}`
+                  }
+                </CardTitle>
                 <CardDescription>
-                  Compatible with {app.data.compatibility}
+                  {
+                    isOrphaned
+                      ? "This app is not currently available from any known source."
+                      : `Compatible with ${app.data.compatibility}`
+                  }
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <InstallButton
-                  client:load
-                  appName={app.data.name}
-                  downloadUrl={app.data.downloadUrl}
-                  palDownloadUrl={app.data.palDownloadUrl}
-                  sourceUrl={app.data.sourceUrl}
-                  bundleId={app.data.bundleId}
-                  size="lg"
-                />
+                {
+                  isOrphaned ? (
+                    <div class="text-sm text-muted-foreground">
+                      No install options available. Check back later or visit
+                      the project's website for updates.
+                    </div>
+                  ) : (
+                    <InstallButton
+                      client:load
+                      appName={app.data.name}
+                      downloadUrl={app.data.downloadUrl}
+                      palDownloadUrl={app.data.palDownloadUrl}
+                      sourceUrl={preferredSourceUrl}
+                      bundleId={app.data.bundleId}
+                      size="lg"
+                    />
+                  )
+                }
               </CardContent>
             </Card>
           </div>

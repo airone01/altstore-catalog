@@ -9,22 +9,11 @@ category: "utilities"
 compatibility: "iOS 14.0 or later"
 downloadUrl: "https://there.was.no.download.url"
 bundleId: "app.aidoku.Aidoku"
-sourceUrl: "https://raw.githubusercontent.com/Aidoku/Aidoku/altstore/apps.json"
+sourceUrls: ["https://raw.githubusercontent.com/Aidoku/Aidoku/altstore/apps.json"]
+
 
 lastUpdated: 1970-01-01
 tags: ["open-source"]
 verified: false
 featured: false
 ---
-
-Free and open source manga reader for iOS and iPadOS
-
-## Version Info
-
-- **Version**: undefined
-- **Size**: NaN MB
-- **Last Updated**: Invalid Date
-
-## Installation
-
-This app is available through the Aidoku Source source. Add the source to your AltStore to install this app.

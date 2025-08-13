@@ -9,22 +9,11 @@ category: "developer"
 compatibility: "iOS 14.0 or later"
 downloadUrl: "https://cdn.altstore.io/file/altstore/apps/altstore/1_6_2_b.ipa"
 bundleId: "com.rileytestut.AltStore.Beta"
-sourceUrl: "https://cdn.altstore.io/file/altstore/apps.json"
+sourceUrls: ["https://cdn.altstore.io/file/altstore/apps.json"]
+officialSourceUrl: "https://cdn.altstore.io/file/altstore/apps.json"
 screenshots: ["https://user-images.githubusercontent.com/705880/78942028-acf54300-7a6d-11ea-821c-5bb7a9b3e73a.PNG","https://user-images.githubusercontent.com/705880/78942222-0fe6da00-7a6e-11ea-9f2a-dda16157583c.PNG","https://user-images.githubusercontent.com/705880/65605577-332cba80-df5e-11e9-9f00-b369ce974f71.PNG"]
 lastUpdated: 2023-03-21
 tags: ["beta"]
 verified: true
 featured: false
 ---
-
-An alternative App Store for iOS.
-
-## Version Info
-
-- **Version**: 1.6.2b
-- **Size**: 5.4 MB
-- **Last Updated**: 3/21/2023
-
-## Installation
-
-This app is available through the AltStore source. Add the source to your AltStore to install this app.

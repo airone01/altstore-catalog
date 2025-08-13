@@ -22,6 +22,8 @@ export async function getStaticPaths() {
 
 const source = Astro.props;
 const { Content } = await source.render();
+const hasBody =
+  typeof source.body === "string" && source.body.trim().length > 0;
 
 // Get related sources (same category, excluding current)
 const allSources = await getCollection("sources");
@@ -33,9 +35,24 @@ const relatedSources = allSources
   )
   .slice(0, 3);
 
-// Find apps that might be from this source (for demo purposes)
+// Find apps that are from this source
 const allApps = await getCollection("apps");
-const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filter by actual source
+
+// Prefer explicit app slug list if present
+let sourceApps = [] as typeof allApps;
+if (Array.isArray(source.data.apps) && source.data.apps.length > 0) {
+  const bySlug = await Promise.all(
+    source.data.apps.map((slug: string) => getEntry("apps", slug)),
+  );
+  sourceApps = bySlug.filter(Boolean) as typeof allApps;
+} else {
+  sourceApps = allApps.filter((app) => {
+    const urls =
+      app.data.sourceUrls || (app.data.sourceUrl ? [app.data.sourceUrl] : []);
+    return urls.includes(source.data.url);
+  });
+}
+sourceApps = sourceApps.slice(0, 6);
 ---
 
 <html lang="en" class="h-full">
@@ -138,7 +155,16 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
               <div class="flex flex-col sm:flex-row gap-2">
                 <Button
                   size="lg"
-                  onClick={`navigator.clipboard.writeText('${source.data.url}'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Source URL', 2000)`}
+                  onClick={(e) => {
+                    navigator.clipboard.writeText(source.data.url);
+                    const btn = e.currentTarget;
+                    const prev = btn.textContent;
+                    btn.textContent = "Copied!";
+                    setTimeout(() => {
+                      if (btn.textContent === "Copied!")
+                        btn.textContent = prev || "Copy Source URL";
+                    }, 2000);
+                  }}
                 >
                   Copy Source URL
                 </Button>
@@ -213,16 +239,18 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
           }
 
           <!-- Description/Content -->
-          <Card>
-            <CardHeader>
-              <CardTitle>About {source.data.name}</CardTitle>
-            </CardHeader>
-            <CardContent
-              className="prose prose-sm max-w-none dark:prose-invert"
-            >
-              <Content />
-            </CardContent>
-          </Card>
+          {
+            hasBody && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>About {source.data.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="prose prose-sm max-w-none dark:prose-invert">
+                  <Content />
+                </CardContent>
+              </Card>
+            )
+          }
         </div>
 
         <!-- Sidebar -->
@@ -316,9 +344,18 @@ const sourceApps = allApps.slice(0, 6); // In a real implementation, you'd filte
             </CardHeader>
             <CardContent className="space-y-3">
               <Button
-                class="w-full"
+                className="w-full"
                 size="sm"
-                onClick={`navigator.clipboard.writeText('${source.data.url}'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Source URL', 2000)`}
+                onClick={(e) => {
+                  navigator.clipboard.writeText(source.data.url);
+                  const btn = e.currentTarget;
+                  const prev = btn.textContent;
+                  btn.textContent = "Copied!";
+                  setTimeout(() => {
+                    if (btn.textContent === "Copied!")
+                      btn.textContent = prev || "Copy Source URL";
+                  }, 2000);
+                }}
               >
                 Copy Source URL
               </Button>

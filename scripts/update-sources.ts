@@ -28,10 +28,12 @@ async function updateSources() {
       
       // Generate source markdown file
       const sourceSlug = source.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const appSlugs: string[] = apps.map(app => `${app.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${sourceSlug}`);
+
       const sourceContent = `---
 name: "${source.name}"
 maintainer: "${source.maintainer}"
-description: "${source.description}"
+description: "${(source.description || '').replace(/"/g, '\\"')}"
 url: "${source.url}"
 ${source.icon ? `icon: "${source.icon}"` : ''}
 ${source.website ? `website: "${source.website}"` : ''}
@@ -43,14 +45,8 @@ lastUpdated: ${
     : '1970-01-01'
 }
 tags: ${JSON.stringify(source.tags)}
-appCount: ${source.appCount}
+apps: ${JSON.stringify(appSlugs)}
 ---
-
-This source contains ${apps.length} apps and is automatically synced from the official source JSON.
-
-## Apps Available
-
-${apps.map(app => `- **${app.name}** (v${app.version}) - ${app.developer}`).join('\n')}
 `;
 
       const sourcePath = path.join(
@@ -68,7 +64,7 @@ ${apps.map(app => `- **${app.name}** (v${app.version}) - ${app.developer}`).join
         const appContent = `---
 name: "${app.name}"
 developer: "${app.developer}"
-description: "${app.description.replace(/"/g, '\\"')}"
+description: "${(app.description || '').replace(/"/g, '\\"')}"
 icon: "${app.icon}"
 version: "${app.version ?? '?'}"
 size: "${app.size ?? 0}"
@@ -76,7 +72,8 @@ category: "${app.category}"
 compatibility: "${app.compatibility}"
 downloadUrl: "${app.downloadUrl ?? 'https://there.was.no.download.url'}"
 bundleId: "${app.bundleId}"
-sourceUrl: "${app.sourceUrl}"
+sourceUrls: ${JSON.stringify(app.sourceUrls)}
+${app.officialSourceUrl ? `officialSourceUrl: "${app.officialSourceUrl}"` : ''}
 ${app.screenshots ? `screenshots: ${JSON.stringify(app.screenshots)}` : ''}
 lastUpdated: ${
   app.lastUpdated instanceof Date && !Number.isNaN(app.lastUpdated.getTime())
@@ -87,18 +84,6 @@ tags: ${JSON.stringify(app.tags)}
 verified: ${app.verified}
 featured: ${app.featured}
 ---
-
-${app.description}
-
-## Version Info
-
-- **Version**: ${app.version}
-- **Size**: ${app.size}
-- **Last Updated**: ${app.lastUpdated.toLocaleDateString()}
-
-## Installation
-
-This app is available through the ${source.name} source. Add the source to your AltStore to install this app.
 `;
 
         const appPath = path.join(

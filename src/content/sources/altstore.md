@@ -11,16 +11,5 @@ category: "Official"
 verified: true
 lastUpdated: 2023-09-19
 tags: ["emulation","games"]
-appCount: 6
+apps: ["altstore-altstore","altstore-altstore","delta-altstore","delta-altstore","clip-altstore","clip-altstore"]
 ---
-
-This source contains 6 apps and is automatically synced from the official source JSON.
-
-## Apps Available
-
-- **AltStore** (v1.6.3) - Riley Testut
-- **AltStore** (v1.6.2b) - Riley Testut
-- **Delta** (v1.4.2) - Riley Testut
-- **Delta** (v1.4rc) - Riley Testut
-- **Clip** (v1.0) - Riley Testut
-- **Clip** (v1.1b1) - Riley Testut

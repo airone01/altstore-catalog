@@ -9,22 +9,11 @@ category: "utilities"
 compatibility: "iOS 14.0 or later"
 downloadUrl: "https://there.was.no.download.url"
 bundleId: "dev.remindapp.remind"
-sourceUrl: "https://adp.salupovteam.com/altrepo.json"
+sourceUrls: ["https://adp.salupovteam.com/altrepo.json"]
+
 
 lastUpdated: 1970-01-01
 tags: []
 verified: false
 featured: false
 ---
-
-Easy reminders
-
-## Version Info
-
-- **Version**: undefined
-- **Size**: NaN MB
-- **Last Updated**: Invalid Date
-
-## Installation
-
-This app is available through the SalupovTeam source. Add the source to your AltStore to install this app.

@@ -27,7 +27,12 @@ const appsCollection = defineCollection({
 
 		// Enhanced installation fields
 		bundleId: z.string().optional(), // App bundle identifier (e.g., com.rileytestut.Delta)
-		sourceUrl: z.string().url().optional(), // Source JSON URL containing this app
+		// Multiple distribution sources for this app
+		sourceUrls: z.array(z.string().url()).optional(),
+		// Back-compat single source (deprecated)
+		sourceUrl: z.string().url().optional(),
+		// Optional official/canonical source for this app (e.g., Official AltStore URL)
+		officialSourceUrl: z.string().url().optional(),
 
 		// Optional fields
 		palDownloadUrl: z.string().url().optional(), // For AltStore PAL
@@ -71,6 +76,9 @@ const sourcesCollection = defineCollection({
 
 		// Featured apps in this source (for preview)
 		featuredApps: z.array(z.string()).optional(), // Array of app slugs
+
+		// App list for this source (kept in sync by generator)
+		apps: z.array(z.string()).optional(), // Array of app slugs
 
 		// Contact/social
 		contact: z.string().optional(), // Email or social handle
