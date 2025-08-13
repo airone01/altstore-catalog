@@ -7,9 +7,11 @@ For full details on what's included, check the website: https://aidoku.app/"
 url: "https://raw.githubusercontent.com/Aidoku/Aidoku/altstore/apps.json"
 
 website: "https://aidoku.app/"
-category: "Official"
-verified: true
+category: "Developer"
+verified: false
 lastUpdated: 1970-01-01
 tags: []
 apps: ["aidoku-aidoku-source"]
+overrides:
+  icon: "https://aidoku.app/images/apple-touch-icon.png"
 ---

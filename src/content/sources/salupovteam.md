@@ -1,5 +1,5 @@
 ---
-name: "SalupovTeam's Repo"
+name: "SalupovTeam"
 maintainer: "SalupovTeam"
 description: "Welcome to SalupovTeam Repo! Here you can download our apps."
 url: "https://adp.salupovteam.com/altrepo.json"

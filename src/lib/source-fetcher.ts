@@ -121,7 +121,16 @@ export function parseAltStoreSource(source: AltStoreSource, url: string): Parsed
 
   // Determine category based on source identifier and name
   let category: ParsedSource['category'] = 'Community';
-  if (source.identifier?.includes('altstore') || source.name?.toLowerCase().includes('altstore')) {
+  
+  // Only mark as Official if it's actually the official AltStore source
+  // Check for specific patterns that indicate the official source
+  const isOfficialAltStore = 
+    (source.identifier === 'com.altstore.source' || 
+     source.identifier === 'altstore.source' ||
+     (source.name.toLowerCase() === 'altstore' && 
+      (url.includes('altstore.io') || url.includes('cdn.altstore.io'))));
+  
+  if (isOfficialAltStore) {
     category = 'Official';
   } else if (source.apps.length <= 3) {
     category = 'Developer';
