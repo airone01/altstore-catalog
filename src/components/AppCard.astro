@@ -9,24 +9,29 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Image } from "astro:assets";
 
 interface Props {
   app: CollectionEntry<"apps">;
+  loading: "eager" | "lazy" | undefined;
   compact?: boolean;
 }
 
-const { app, compact = false } = Astro.props as Props;
+const { app, compact = false, loading } = Astro.props as Props;
 ---
 
 <Card className="hover:shadow-lg transition-shadow">
   <CardHeader className={compact ? "pb-4" : undefined}>
     <div class="flex items-start gap-3">
-      <img
+      <Image
         src={app.data.icon}
         alt={`${app.data.name} icon`}
         class={compact
           ? "w-12 h-12 rounded-xl object-cover flex-shrink-0"
           : "w-14 h-14 rounded-xl object-cover flex-shrink-0"}
+        loading={loading}
+        width={50}
+        height={50}
       />
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 mb-1">

@@ -10,4 +10,6 @@ verified: false
 lastUpdated: 1970-01-01
 tags: []
 apps: ["remind-salupovteam","bacon-salupovteam"]
+overrides:
+  name: "SalupovTeam Repo"
 ---

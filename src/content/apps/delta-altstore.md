@@ -15,5 +15,5 @@ screenshots: ["https://user-images.githubusercontent.com/705880/65600448-f7d9be0
 lastUpdated: 2023-02-13
 tags: ["nintendo","sega","beta"]
 verified: true
-featured: false
+featured: true
 ---

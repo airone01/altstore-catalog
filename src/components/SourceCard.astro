@@ -4,23 +4,37 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SourceAddButton } from "@/components/source-add-button";
+import { Image } from "astro:assets";
 
 interface Props {
   source: CollectionEntry<"sources">;
+  loading: "eager" | "lazy" | undefined;
 }
 
-const { source } = Astro.props as Props;
+const { source, loading } = Astro.props as Props;
+
+// Apply overrides to display fields
+const display = {
+  name: source.data.overrides?.name ?? source.data.name,
+  maintainer: source.data.overrides?.maintainer ?? source.data.maintainer,
+  description: source.data.overrides?.description ?? source.data.description,
+  icon: source.data.overrides?.icon ?? source.data.icon,
+  tags: source.data.overrides?.tags ?? source.data.tags,
+};
 ---
 
 <Card className="hover:shadow-lg transition-shadow">
   <CardHeader>
     <div class="flex items-start gap-3">
       {
-        source.data.icon ? (
-          <img
-            src={source.data.icon}
-            alt={`${source.data.name} icon`}
+        display.icon ? (
+          <Image
+            src={display.icon}
+            alt={`${display.name} icon`}
             class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+            width={50}
+            height={50}
+            loading={loading}
           />
         ) : (
           <div
@@ -33,7 +47,7 @@ const { source } = Astro.props as Props;
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 mb-1">
           <CardTitle className="text-lg leading-tight">
-            {source.data.name}
+            {display.name}
           </CardTitle>
           {
             source.data.verified && (
@@ -47,27 +61,27 @@ const { source } = Astro.props as Props;
           }
         </div>
         <p class="text-sm text-muted-foreground">
-          by {source.data.maintainer}
+          by {display.maintainer}
         </p>
       </div>
     </div>
   </CardHeader>
   <CardContent>
     <p class="text-sm text-muted-foreground mb-4 line-clamp-3">
-      {source.data.description}
+      {display.description}
     </p>
 
     {
-      source.data.tags && (
+      display.tags && (
         <div class="flex flex-wrap gap-1 mb-4">
-          {source.data.tags.slice(0, 3).map((tag) => (
+          {display.tags.slice(0, 3).map((tag) => (
             <Badge key={tag} variant="secondary" className="text-xs">
               {tag}
             </Badge>
           ))}
-          {source.data.tags.length > 3 && (
+          {display.tags.length > 3 && (
             <Badge variant="secondary" className="text-xs">
-              +{source.data.tags.length - 3}
+              +{display.tags.length - 3}
             </Badge>
           )}
         </div>

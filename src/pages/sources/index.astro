@@ -66,34 +66,6 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
           Discover sources to your AltStore or AltStore PAL. Sources are
           collections of apps curated by developers and communities.
         </p>
-
-        <!-- Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card>
-            <CardContent>
-              <div class="text-2xl font-bold">{sources.length}</div>
-              <p class="text-xs text-muted-foreground">Total Sources</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <div class="text-2xl font-bold">{totalApps}</div>
-              <p class="text-xs text-muted-foreground">Total Apps</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <div class="text-2xl font-bold">{verifiedSources}</div>
-              <p class="text-xs text-muted-foreground">Verified Sources</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <div class="text-2xl font-bold">{categories.length}</div>
-              <p class="text-xs text-muted-foreground">Categories</p>
-            </CardContent>
-          </Card>
-        </div>
       </div>
 
       <!-- Sources by Category -->
@@ -105,7 +77,10 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
             </h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {sourcesByCategory[category].map((source) => (
-                <SourceCard source={source} />
+                <SourceCard
+                  source={source}
+                  loading={category === "Developer" ? "eager" : "lazy"}
+                />
               ))}
             </div>
           </section>

@@ -132,108 +132,81 @@ const formatSize = (size: string) => {
           />
         </div>
 
-        <!-- Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card>
-            <CardContent>
-              <div class="text-2xl font-bold">{apps.length}</div>
-              <p class="text-xs text-muted-foreground">Total Apps</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <div class="text-2xl font-bold">{featuredApps.length}</div>
-              <p class="text-xs text-muted-foreground">Featured Apps</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <div class="text-2xl font-bold">
-                {apps.filter((app) => app.data.verified).length}
+        <!-- Featured Apps -->
+        {
+          featuredApps.length > 0 && (
+            <section class="mb-12">
+              <h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6">
+                Featured Apps
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredApps.map((app) => (
+                  <AppCard app={app} loading="eager" />
+                ))}
               </div>
-              <p class="text-xs text-muted-foreground">Verified Apps</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <div class="text-2xl font-bold">{categories.length}</div>
-              <p class="text-xs text-muted-foreground">Categories</p>
-            </CardContent>
-          </Card>
-        </div>
+            </section>
+          )
+        }
+
+        <!-- Apps by Category -->
+        {
+          categories.map((category) => (
+            <section class="mb-12">
+              <h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6 capitalize">
+                {category}
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {appsByCategory[category].map((app) => (
+                  <AppCard app={app} compact loading="lazy" />
+                ))}
+              </div>
+            </section>
+          ))
+        }
+
+        {
+          apps.length === 0 && (
+            <div class="text-center py-12">
+              <h3 class="text-lg font-semibold mb-2">No apps found</h3>
+              <p class="text-muted-foreground">
+                Check back later for new additions!
+              </p>
+            </div>
+          )
+        }
       </div>
 
-      <!-- Featured Apps -->
-      {
-        featuredApps.length > 0 && (
-          <section class="mb-12">
-            <h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6">
-              Featured Apps
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredApps.map((app) => (
-                <AppCard app={app} />
-              ))}
-            </div>
-          </section>
-        )
-      }
-
-      <!-- Apps by Category -->
-      {
-        categories.map((category) => (
-          <section class="mb-12">
-            <h2 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-6 capitalize">
-              {category}
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {appsByCategory[category].map((app) => (
-                <AppCard app={app} compact />
-              ))}
-            </div>
-          </section>
-        ))
-      }
-
-      {
-        apps.length === 0 && (
-          <div class="text-center py-12">
-            <h3 class="text-lg font-semibold mb-2">No apps found</h3>
-            <p class="text-muted-foreground">
-              Check back later for new additions!
+      <!-- Footer -->
+      <footer class="mt-16 border-t bg-background/50 backdrop-blur-sm">
+        <div class="container mx-auto px-4 py-8">
+          <div class="text-center text-sm text-muted-foreground">
+            <p>Community-maintained catalog for AltStore & AltStore PAL</p>
+            <p class="mt-2">
+              <a href="/" class="hover:text-foreground transition-colors"
+                >Home</a
+              >
+              •
+              <a
+                href="/apps"
+                class="hover:text-foreground transition-colors ml-1">Apps</a
+              > •
+              <a
+                href="/sources"
+                class="hover:text-foreground transition-colors ml-1">Sources</a
+              >
             </p>
           </div>
-        )
-      }
-    </main>
-
-    <!-- Footer -->
-    <footer class="mt-16 border-t bg-background/50 backdrop-blur-sm">
-      <div class="container mx-auto px-4 py-8">
-        <div class="text-center text-sm text-muted-foreground">
-          <p>Community-maintained catalog for AltStore & AltStore PAL</p>
-          <p class="mt-2">
-            <a href="/" class="hover:text-foreground transition-colors">Home</a>
-            •
-            <a href="/apps" class="hover:text-foreground transition-colors ml-1"
-              >Apps</a
-            > •
-            <a
-              href="/sources"
-              class="hover:text-foreground transition-colors ml-1">Sources</a
-            >
-          </p>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </main>
   </body>
-</html>
 
-<style>
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-</style>
+  <style>
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</html>
