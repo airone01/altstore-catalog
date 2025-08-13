@@ -25,6 +25,17 @@ const { Content } = await source.render();
 const hasBody =
   typeof source.body === "string" && source.body.trim().length > 0;
 
+// Resolve display fields with overrides where present
+const display = {
+  name: source.data.overrides?.name ?? source.data.name,
+  maintainer: source.data.overrides?.maintainer ?? source.data.maintainer,
+  description: source.data.overrides?.description ?? source.data.description,
+  icon: source.data.overrides?.icon ?? source.data.icon,
+  website: source.data.overrides?.website ?? source.data.website,
+  category: source.data.overrides?.category ?? source.data.category,
+  tags: source.data.overrides?.tags ?? source.data.tags,
+};
+
 // Get related sources (same category, excluding current)
 const allSources = await getCollection("sources");
 const relatedSources = allSources
@@ -61,15 +72,11 @@ sourceApps = sourceApps.slice(0, 6);
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{source.data.name} - Ascend</title>
-    <meta name="description" content={source.data.description} />
-    <meta property="og:title" content={source.data.name} />
-    <meta property="og:description" content={source.data.description} />
-    {
-      source.data.icon && (
-        <meta property="og:image" content={source.data.icon} />
-      )
-    }
+    <title>{display.name} - Ascend</title>
+    <meta name="description" content={display.description} />
+    <meta property="og:title" content={display.name} />
+    <meta property="og:description" content={display.description} />
+    {display.icon && <meta property="og:image" content={display.icon} />}
   </head>
 
   <body class="h-full min-h-screen">
@@ -134,7 +141,7 @@ sourceApps = sourceApps.slice(0, 6);
                   <h1
                     class="scroll-m-20 text-3xl font-extrabold tracking-tight"
                   >
-                    {source.data.name}
+                    {display.name}
                   </h1>
                   {
                     source.data.verified && (
@@ -148,7 +155,7 @@ sourceApps = sourceApps.slice(0, 6);
                   }
                 </div>
                 <p class="text-lg text-muted-foreground">
-                  by {source.data.maintainer}
+                  by {display.maintainer}
                 </p>
               </div>
 
@@ -169,9 +176,9 @@ sourceApps = sourceApps.slice(0, 6);
                   Copy Source URL
                 </Button>
                 {
-                  source.data.website && (
+                  display.website && (
                     <a
-                      href={source.data.website}
+                      href={display.website}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -189,7 +196,7 @@ sourceApps = sourceApps.slice(0, 6);
             </div>
 
             <p class="text-base text-foreground mb-4">
-              {source.data.description}
+              {display.description}
             </p>
           </div>
         </div>
@@ -205,7 +212,7 @@ sourceApps = sourceApps.slice(0, 6);
                 <CardHeader>
                   <CardTitle>Apps in this Source</CardTitle>
                   <CardDescription>
-                    Popular apps available through {source.data.name}
+                    Popular apps available through {display.name}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -243,7 +250,7 @@ sourceApps = sourceApps.slice(0, 6);
             hasBody && (
               <Card>
                 <CardHeader>
-                  <CardTitle>About {source.data.name}</CardTitle>
+                  <CardTitle>About {display.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="prose prose-sm max-w-none dark:prose-invert">
                   <Content />
@@ -273,13 +280,13 @@ sourceApps = sourceApps.slice(0, 6);
                 <label class="text-sm font-medium text-muted-foreground"
                   >Maintainer</label
                 >
-                <p class="text-sm">{source.data.maintainer}</p>
+                <p class="text-sm">{display.maintainer}</p>
               </div>
               <div>
                 <label class="text-sm font-medium text-muted-foreground"
                   >Category</label
                 >
-                <p class="text-sm">{source.data.category}</p>
+                <p class="text-sm">{display.category}</p>
               </div>
               <!-- <div>
                 <label class="text-sm font-medium text-muted-foreground">App Count</label>
@@ -319,14 +326,14 @@ sourceApps = sourceApps.slice(0, 6);
 
           <!-- Tags -->
           {
-            source.data.tags && source.data.tags.length > 0 && (
+            display.tags && display.tags.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Tags</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div class="flex flex-wrap gap-2">
-                    {source.data.tags.map((tag) => (
+                    {display.tags.map((tag) => (
                       <Badge key={tag} variant="secondary" className="text-xs">
                         {tag}
                       </Badge>

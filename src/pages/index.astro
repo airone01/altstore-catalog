@@ -51,11 +51,6 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
   </head>
 
   <body class="h-full">
-    <AuroraBackground
-      children={[]}
-      className="h-full w-full top-0 left-0 absolute -z-10"
-    />
-
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
       <div
@@ -75,302 +70,309 @@ const verifiedSources = sources.filter((s) => s.data.verified).length;
       </div>
     </nav>
 
-    <!-- Hero Section -->
-    <div class="flex flex-col justify-center items-center min-h-[60vh] px-4">
-      <div
-        class="container flex flex-col gap-6 items-center text-center max-w-4xl"
-      >
-        <div class="flex gap-6">
-          <Favicon class="h-full aspect-square" height={null} width={null} />
-          <h1
-            class="scroll-m-20 text-4xl md:text-6xl font-extrabold tracking-tight text-balance"
-          >
-            Ascend
-          </h1>
-        </div>
-        <TextReveal
-          client:load
-          text="A catalog of sources (and their apps) for AltStore & AltStore PAL"
-          className="text-xl md:text-2xl font-semibold tracking-tight text-muted-foreground"
-        />
-        <p class="text-lg text-muted-foreground max-w-2xl">
-          Discover amazing iOS apps, find trusted sources, and contribute to the
-          community-driven ecosystem of alternative app distribution.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-3 mt-4">
-          <a href="/sources">
-            <Button size="lg" className="cursor-pointer w-full sm:w-auto">
-              Browse Sources ({totalSources})
-            </Button>
-          </a>
-          <a href="/apps">
-            <Button
-              size="lg"
-              variant="outline"
-              className="cursor-pointer w-full sm:w-auto"
+    <div class="h-full w-full top-0 left-0">
+      <!-- Hero Section -->
+      <div class="flex flex-col justify-center items-center min-h-[60vh] px-4">
+        <div
+          class="container flex flex-col gap-6 items-center text-center max-w-4xl"
+        >
+          <div class="flex gap-6">
+            <Favicon class="h-full aspect-square" height={null} width={null} />
+            <h1
+              class="scroll-m-20 text-4xl md:text-6xl font-extrabold tracking-tight text-balance"
             >
-              Browse Apps ({totalApps})
-            </Button>
-          </a>
+              Ascend
+            </h1>
+          </div>
+          <TextReveal
+            client:load
+            text="A catalog of sources (and their apps) for AltStore & AltStore PAL"
+            className="text-xl md:text-2xl font-semibold tracking-tight text-muted-foreground"
+          />
+          <p class="text-lg text-muted-foreground max-w-2xl">
+            Discover amazing iOS apps, find trusted sources, and contribute to
+            the community-driven ecosystem of alternative app distribution.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 mt-4">
+            <a href="/sources">
+              <Button size="lg" className="cursor-pointer w-full sm:w-auto">
+                Browse Sources ({totalSources})
+              </Button>
+            </a>
+            <a href="/apps">
+              <Button
+                size="lg"
+                variant="outline"
+                className="cursor-pointer w-full sm:w-auto"
+              >
+                Browse Apps ({totalApps})
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Stats Section -->
-    <div class="container mx-auto px-4 py-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <Card className="text-center">
-          <CardContent>
-            <div class="text-3xl font-bold text-primary mb-2">{totalApps}</div>
-            <h3 class="text-lg font-semibold mb-1">Apps Available</h3>
-            <p class="text-sm text-muted-foreground">
-              From the sources cataloged
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="text-center">
-          <CardContent>
-            <div class="text-3xl font-bold text-primary mb-2">
-              {totalSources}
-            </div>
-            <h3 class="text-lg font-semibold mb-1">Sources Listed</h3>
-            <p class="text-sm text-muted-foreground">
-              From developers worldwide
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="text-center">
-          <CardContent>
-            <div class="text-3xl font-bold text-primary mb-2">
-              {verifiedSources}
-            </div>
-            <h3 class="text-lg font-semibold mb-1">Verified Sources</h3>
-            <p class="text-sm text-muted-foreground">Trusted and secure</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <!-- Latest Apps Section -->
-      <section class="mb-12">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="scroll-m-20 text-3xl font-semibold tracking-tight">
-            Latest Apps
-          </h2>
-          <a href="/apps">
-            <Button variant="outline">View All Apps</Button>
-          </a>
+      <!-- Stats Section -->
+      <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <Card className="text-center">
+            <CardContent>
+              <div class="text-3xl font-bold text-primary mb-2">
+                {totalApps}
+              </div>
+              <h3 class="text-lg font-semibold mb-1">Apps Available</h3>
+              <p class="text-sm text-muted-foreground">
+                From the sources cataloged
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="text-center">
+            <CardContent>
+              <div class="text-3xl font-bold text-primary mb-2">
+                {totalSources}
+              </div>
+              <h3 class="text-lg font-semibold mb-1">Sources Listed</h3>
+              <p class="text-sm text-muted-foreground">
+                From developers worldwide
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="text-center">
+            <CardContent>
+              <div class="text-3xl font-bold text-primary mb-2">
+                {verifiedSources}
+              </div>
+              <h3 class="text-lg font-semibold mb-1">Verified Sources</h3>
+              <p class="text-sm text-muted-foreground">Trusted and secure</p>
+            </CardContent>
+          </Card>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {
-            latestApps.map((app) => (
-              <Card
-                key={app.slug}
-                className="hover:shadow-lg transition-shadow"
-              >
-                <CardHeader className="pb-4">
-                  <div class="flex items-start gap-3">
-                    <img
-                      src={app.data.icon}
-                      alt={`${app.data.name} icon`}
-                      class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
-                    />
-                    <div class="flex-1 min-w-0">
-                      <CardTitle className="text-lg leading-tight truncate">
-                        {app.data.name}
-                      </CardTitle>
-                      <CardDescription className="text-sm">
-                        {app.data.developer}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
-                    {app.data.description}
-                  </p>
+        <!-- Latest Apps Section -->
+        <section class="mb-12">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="scroll-m-20 text-3xl font-semibold tracking-tight">
+              Latest Apps
+            </h2>
+            <a href="/apps">
+              <Button variant="outline">View All Apps</Button>
+            </a>
+          </div>
 
-                  <div class="flex items-center justify-between">
-                    <div class="text-xs text-muted-foreground">
-                      Updated {app.data.lastUpdated.toLocaleDateString()}
-                    </div>
-                    <a href={`/apps/${app.slug}`}>
-                      <Button size="sm">View App</Button>
-                    </a>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          }
-        </div>
-      </section>
-
-      <!-- Featured Sources Section -->
-      <section class="mb-12">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="scroll-m-20 text-3xl font-semibold tracking-tight">
-            Featured Sources
-          </h2>
-          <a href="/sources">
-            <Button variant="outline">View All Sources</Button>
-          </a>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {
-            featuredSources.map((source) => (
-              <Card
-                key={source.slug}
-                className="hover:shadow-lg transition-shadow"
-              >
-                <CardHeader>
-                  <div class="flex items-start gap-3">
-                    {source.data.icon ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {
+              latestApps.map((app) => (
+                <Card
+                  key={app.slug}
+                  className="hover:shadow-lg transition-shadow"
+                >
+                  <CardHeader className="pb-4">
+                    <div class="flex items-start gap-3">
                       <img
-                        src={source.data.icon}
-                        alt={`${source.data.name} icon`}
+                        src={app.data.icon}
+                        alt={`${app.data.name} icon`}
                         class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
                       />
-                    ) : (
-                      <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <span class="text-lg font-bold text-primary">
-                          {source.data.name.charAt(0)}
-                        </span>
-                      </div>
-                    )}
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 mb-1">
-                        <CardTitle className="text-lg leading-tight">
-                          {source.data.name}
+                      <div class="flex-1 min-w-0">
+                        <CardTitle className="text-lg leading-tight truncate">
+                          {app.data.name}
                         </CardTitle>
-                        {source.data.verified && (
-                          <Badge
-                            variant="default"
-                            className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                          >
-                            ✓ Verified
-                          </Badge>
-                        )}
+                        <CardDescription className="text-sm">
+                          {app.data.developer}
+                        </CardDescription>
                       </div>
-                      <CardDescription className="text-sm">
-                        by {source.data.maintainer}
-                      </CardDescription>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
-                    {source.data.description}
-                  </p>
+                  </CardHeader>
+                  <CardContent>
+                    <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {app.data.description}
+                    </p>
 
-                  <div class="flex items-center justify-between">
-                    <div class="text-xs text-muted-foreground">
-                      {source.data.category}
-                    </div>
-                    <div class="flex gap-2">
-                      <a href={`/sources/${source.slug}`}>
-                        <Button size="sm" variant="outline">
-                          Details
-                        </Button>
+                    <div class="flex items-center justify-between">
+                      <div class="text-xs text-muted-foreground">
+                        Updated {app.data.lastUpdated.toLocaleDateString()}
+                      </div>
+                      <a href={`/apps/${app.slug}`}>
+                        <Button size="sm">View App</Button>
                       </a>
-                      <Button
-                        size="sm"
-                        onClick={`navigator.clipboard.writeText('${source.data.url}'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy URL', 2000)`}
-                      >
-                        Copy URL
-                      </Button>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          }
-        </div>
-      </section>
-    </div>
+                  </CardContent>
+                </Card>
+              ))
+            }
+          </div>
+        </section>
 
-    <!-- Footer -->
-    <footer class="border-t bg-background/50 backdrop-blur-sm">
-      <div class="container mx-auto px-4 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 class="font-semibold mb-4">Ascend</h3>
-            <p class="text-sm text-muted-foreground mb-4">
-              Community-maintained catalog of apps and sources for AltStore &
-              AltStore PAL.
-            </p>
-            <div class="flex gap-2">
-              <Badge variant="outline" className="text-xs"
-                >{totalApps} Apps</Badge
-              >
-              <Badge variant="outline" className="text-xs"
-                >{totalSources} Sources</Badge
-              >
+        <!-- Featured Sources Section -->
+        <section class="mb-12">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="scroll-m-20 text-3xl font-semibold tracking-tight">
+              Featured Sources
+            </h2>
+            <a href="/sources">
+              <Button variant="outline">View All Sources</Button>
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {
+              featuredSources.map((source) => (
+                <Card
+                  key={source.slug}
+                  className="hover:shadow-lg transition-shadow"
+                >
+                  <CardHeader>
+                    <div class="flex items-start gap-3">
+                      {source.data.icon ? (
+                        <img
+                          src={source.data.icon}
+                          alt={`${source.data.name} icon`}
+                          class="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <span class="text-lg font-bold text-primary">
+                            {source.data.name.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                          <CardTitle className="text-lg leading-tight">
+                            {source.data.name}
+                          </CardTitle>
+                          {source.data.verified && (
+                            <Badge
+                              variant="default"
+                              className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                            >
+                              ✓ Verified
+                            </Badge>
+                          )}
+                        </div>
+                        <CardDescription className="text-sm">
+                          by {source.data.maintainer}
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {source.data.description}
+                    </p>
+
+                    <div class="flex items-center justify-between">
+                      <div class="text-xs text-muted-foreground">
+                        {source.data.category}
+                      </div>
+                      <div class="flex gap-2">
+                        <a href={`/sources/${source.slug}`}>
+                          <Button size="sm" variant="outline">
+                            Details
+                          </Button>
+                        </a>
+                        <Button
+                          size="sm"
+                          onClick={`navigator.clipboard.writeText('${source.data.url}'); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy URL', 2000)`}
+                        >
+                          Copy URL
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            }
+          </div>
+        </section>
+      </div>
+
+      <!-- Footer -->
+      <footer class="w-full border-t bg-background/50 backdrop-blur-sm">
+        <div class="container mx-auto px-4 py-12">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 class="font-semibold mb-4">Ascend</h3>
+              <p class="text-sm text-muted-foreground mb-4">
+                Community-maintained catalog of apps and sources for AltStore &
+                AltStore PAL.
+              </p>
+              <div class="flex gap-2">
+                <Badge variant="outline" className="text-xs"
+                  >{totalApps} Apps</Badge
+                >
+                <Badge variant="outline" className="text-xs"
+                  >{totalSources} Sources</Badge
+                >
+              </div>
+            </div>
+
+            <div>
+              <h4 class="font-semibold mb-4">Browse</h4>
+              <ul class="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <a
+                    href="/apps"
+                    class="hover:text-foreground transition-colors">All Apps</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="/sources"
+                    class="hover:text-foreground transition-colors"
+                    >All Sources</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="/apps?category=Games"
+                    class="hover:text-foreground transition-colors">Games</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="/apps?category=Utilities"
+                    class="hover:text-foreground transition-colors">Utilities</a
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 class="font-semibold mb-4">Resources</h4>
+              <ul class="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <a
+                    href="https://altstore.io"
+                    target="_blank"
+                    class="hover:text-foreground transition-colors"
+                    >AltStore Official</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://faq.altstore.io"
+                    target="_blank"
+                    class="hover:text-foreground transition-colors">FAQ</a
+                  >
+                </li>
+              </ul>
             </div>
           </div>
 
-          <div>
-            <h4 class="font-semibold mb-4">Browse</h4>
-            <ul class="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <a href="/apps" class="hover:text-foreground transition-colors"
-                  >All Apps</a
-                >
-              </li>
-              <li>
-                <a
-                  href="/sources"
-                  class="hover:text-foreground transition-colors">All Sources</a
-                >
-              </li>
-              <li>
-                <a
-                  href="/apps?category=Games"
-                  class="hover:text-foreground transition-colors">Games</a
-                >
-              </li>
-              <li>
-                <a
-                  href="/apps?category=Utilities"
-                  class="hover:text-foreground transition-colors">Utilities</a
-                >
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 class="font-semibold mb-4">Resources</h4>
-            <ul class="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <a
-                  href="https://altstore.io"
-                  target="_blank"
-                  class="hover:text-foreground transition-colors"
-                  >AltStore Official</a
-                >
-              </li>
-              <li>
-                <a
-                  href="https://faq.altstore.io"
-                  target="_blank"
-                  class="hover:text-foreground transition-colors">FAQ</a
-                >
-              </li>
-            </ul>
+          <div
+            class="mt-8 pt-8 border-t text-center text-sm text-muted-foreground"
+          >
+            <p>Made with ❤️ by airone01.</p>
+            <p class="mt-2">
+              Not affiliated with AltStore LLC, Apple Inc., or any app
+              developers. Apps and sources are provided by their respective
+              creators.
+            </p>
           </div>
         </div>
-
-        <div
-          class="mt-8 pt-8 border-t text-center text-sm text-muted-foreground"
-        >
-          <p>Made with ❤️ by airone01.</p>
-          <p class="mt-2">
-            Not affiliated with AltStore LLC, Apple Inc., or any app developers.
-            Apps and sources are provided by their respective creators.
-          </p>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   </body>
 </html>
 

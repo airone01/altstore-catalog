@@ -10,4 +10,8 @@ verified: false
 lastUpdated: 1970-01-01
 tags: ["emulation","games"]
 apps: ["ignited-ignited-source"]
+
+overrides:
+  maintainer: "LitRitt"
+  description: "Source of Ignited, a multi system retro game emulator for iPhone and iPad."
 ---

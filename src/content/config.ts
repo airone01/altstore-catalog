@@ -54,6 +54,40 @@ const appsCollection = defineCollection({
 		// Internal metadata
 		verified: z.boolean().default(false), // Verified by maintainers
 		submittedBy: z.string().optional(), // GitHub username of submitter
+
+		// Manual overrides for display
+		overrides: z
+			.object({
+				name: z.string().optional(),
+				developer: z.string().optional(),
+				description: z.string().optional(),
+				icon: z.string().url().optional(),
+				version: z.string().optional(),
+				size: z.string().optional(),
+				category: z
+					.enum([
+						"games",
+						"productivity",
+						"utilities",
+						"entertainment",
+						"social",
+						"education",
+						"developer",
+					])
+					.optional(),
+				compatibility: z.string().optional(),
+				downloadUrl: z.string().url().optional(),
+				palDownloadUrl: z.string().url().optional(),
+				bundleId: z.string().optional(),
+				website: z.string().url().optional(),
+				repoUrl: z.string().url().optional(),
+				appStoreUrl: z.string().url().optional(),
+				screenshots: z.array(z.string().url()).optional(),
+				tags: z.array(z.string()).optional(),
+				sourceUrls: z.array(z.string().url()).optional(),
+				officialSourceUrl: z.string().url().optional(),
+			})
+			.optional(),
 	}),
 });
 
@@ -98,6 +132,21 @@ const sourcesCollection = defineCollection({
 		// Internal metadata
 		submittedBy: z.string().optional(), // GitHub username of submitter
 		dateAdded: z.date().optional(),
+
+		// Manual overrides for display
+		overrides: z
+			.object({
+				name: z.string().optional(),
+				maintainer: z.string().optional(),
+				description: z.string().optional(),
+				icon: z.string().url().optional(),
+				website: z.string().url().optional(),
+				category: z
+					.enum(["Official", "Community", "Developer", "Specialized"])
+					.optional(),
+				tags: z.array(z.string()).optional(),
+			})
+			.optional(),
 	}),
 });
 

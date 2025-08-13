@@ -30,6 +30,28 @@ async function updateSources() {
       const sourceSlug = source.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       const appSlugs: string[] = apps.map(app => `${app.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${sourceSlug}`);
 
+      const sourcePath = path.join(
+        process.cwd(),
+        'src/content/sources',
+        `${sourceSlug}.md`
+      );
+
+      // Preserve existing overrides and body
+      let existingSourceOverridesBlock = '';
+      let existingSourceBody = '';
+      try {
+        const existing = await fs.readFile(sourcePath, 'utf8');
+        const fmMatch = existing.match(/^---[\s\S]*?---/);
+        if (fmMatch) {
+          const fm = fmMatch[0];
+          existingSourceBody = existing.slice(fm.length).trimStart();
+          const overridesIdx = fm.indexOf('\noverrides:');
+          if (overridesIdx !== -1) {
+            existingSourceOverridesBlock = fm.slice(overridesIdx + 1).replace(/\n---$/, '');
+          }
+        }
+      } catch {}
+
       const sourceContent = `---
 name: "${source.name}"
 maintainer: "${source.maintainer}"
@@ -46,21 +68,37 @@ lastUpdated: ${
 }
 tags: ${JSON.stringify(source.tags)}
 apps: ${JSON.stringify(appSlugs)}
----
-`;
+${existingSourceOverridesBlock ? `${existingSourceOverridesBlock}\n` : ''}---
+${existingSourceBody}`;
 
-      const sourcePath = path.join(
-        process.cwd(),
-        'src/content/sources',
-        `${sourceSlug}.md`
-      );
-      
       await fs.writeFile(sourcePath, sourceContent);
       console.log(`✅ Created source: ${sourceSlug}.md`);
       
       // Generate app markdown files
       for (const app of apps) {
         const appSlug = `${app.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${sourceSlug}`;
+        const appPath = path.join(
+          process.cwd(),
+          'src/content/apps',
+          `${appSlug}.md`
+        );
+
+        // Preserve existing overrides and body
+        let existingAppOverridesBlock = '';
+        let existingAppBody = '';
+        try {
+          const existing = await fs.readFile(appPath, 'utf8');
+          const fmMatch = existing.match(/^---[\s\S]*?---/);
+          if (fmMatch) {
+            const fm = fmMatch[0];
+            existingAppBody = existing.slice(fm.length).trimStart();
+            const overridesIdx = fm.indexOf('\noverrides:');
+            if (overridesIdx !== -1) {
+              existingAppOverridesBlock = fm.slice(overridesIdx + 1).replace(/\n---$/, '');
+            }
+          }
+        } catch {}
+
         const appContent = `---
 name: "${app.name}"
 developer: "${app.developer}"
@@ -83,15 +121,9 @@ lastUpdated: ${
 tags: ${JSON.stringify(app.tags)}
 verified: ${app.verified}
 featured: ${app.featured}
----
-`;
+${existingAppOverridesBlock ? `${existingAppOverridesBlock}\n` : ''}---
+${existingAppBody}`;
 
-        const appPath = path.join(
-          process.cwd(),
-          'src/content/apps',
-          `${appSlug}.md`
-        );
-        
         await fs.writeFile(appPath, appContent);
         console.log(`  📱 Created app: ${appSlug}.md`);
       }

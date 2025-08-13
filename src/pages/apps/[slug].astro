@@ -24,6 +24,26 @@ export async function getStaticPaths() {
 const app = Astro.props;
 const { Content } = await app.render();
 
+// Resolve display fields with overrides where present
+const display = {
+  name: app.data.overrides?.name ?? app.data.name,
+  developer: app.data.overrides?.developer ?? app.data.developer,
+  description: app.data.overrides?.description ?? app.data.description,
+  icon: app.data.overrides?.icon ?? app.data.icon,
+  version: app.data.overrides?.version ?? app.data.version,
+  size: app.data.overrides?.size ?? app.data.size,
+  category: app.data.overrides?.category ?? app.data.category,
+  compatibility: app.data.overrides?.compatibility ?? app.data.compatibility,
+  downloadUrl: app.data.overrides?.downloadUrl ?? app.data.downloadUrl,
+  palDownloadUrl: app.data.overrides?.palDownloadUrl ?? app.data.palDownloadUrl,
+  bundleId: app.data.overrides?.bundleId ?? app.data.bundleId,
+  website: app.data.overrides?.website ?? app.data.website,
+  repoUrl: app.data.overrides?.repoUrl ?? app.data.repoUrl,
+  appStoreUrl: app.data.overrides?.appStoreUrl ?? app.data.appStoreUrl,
+  screenshots: app.data.overrides?.screenshots ?? app.data.screenshots,
+  tags: app.data.overrides?.tags ?? app.data.tags,
+};
+
 // Load sources to determine current distribution status
 const allSources = await getCollection("sources");
 const knownSourceUrls = new Set(allSources.map((s) => s.data.url));
@@ -66,14 +86,14 @@ const formatSize = (size: string) => {
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{app.data.name} by {app.data.developer} - Ascend</title>
-    <meta name="description" content={app.data.description} />
+    <title>{display.name} by {display.developer} - Ascend</title>
+    <meta name="description" content={display.description} />
     <meta
       property="og:title"
-      content={`${app.data.name} by ${app.data.developer}`}
+      content={`${display.name} by ${display.developer}`}
     />
-    <meta property="og:description" content={app.data.description} />
-    <meta property="og:image" content={app.data.icon} />
+    <meta property="og:description" content={display.description} />
+    <meta property="og:image" content={display.icon} />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
@@ -117,8 +137,8 @@ const formatSize = (size: string) => {
           <div class="flex flex-col md:flex-row gap-6 lg:flex-1">
             <div class="flex-shrink-0">
               <img
-                src={app.data.icon}
-                alt={`${app.data.name} icon`}
+                src={display.icon}
+                alt={`${display.name} icon`}
                 class="w-32 h-32 md:w-40 md:h-40 rounded-3xl object-cover shadow-lg"
               />
             </div>
@@ -129,7 +149,7 @@ const formatSize = (size: string) => {
                   <h1
                     class="scroll-m-20 text-3xl md:text-4xl font-extrabold tracking-tight"
                   >
-                    {app.data.name}
+                    {display.name}
                   </h1>
                   {
                     app.data.verified && (
@@ -153,24 +173,24 @@ const formatSize = (size: string) => {
                   }
                 </div>
                 <p class="text-lg text-muted-foreground mb-2">
-                  by {app.data.developer}
+                  by {display.developer}
                 </p>
-                <p class="text-base text-foreground">{app.data.description}</p>
+                <p class="text-base text-foreground">{display.description}</p>
               </div>
 
               <!-- Stats -->
               <div
                 class="flex flex-wrap items-center gap-4 mb-4 text-sm text-muted-foreground"
               >
-                <span>{formatSize(app.data.size)}</span>
-                <span>v{app.data.version}</span>
+                <span>{formatSize(display.size)}</span>
+                <span>v{display.version}</span>
               </div>
 
               <!-- Category & Tags -->
               <div class="flex flex-wrap gap-2 mb-4">
-                <Badge variant="default">{app.data.category}</Badge>
+                <Badge variant="default">{display.category}</Badge>
                 {
-                  app.data.tags?.map((tag) => (
+                  display.tags?.map((tag) => (
                     <Badge key={tag} variant="secondary">
                       {tag}
                     </Badge>
@@ -188,14 +208,14 @@ const formatSize = (size: string) => {
                   {
                     isOrphaned
                       ? "Not Currently Distributed"
-                      : `Install ${app.data.name}`
+                      : `Install ${display.name}`
                   }
                 </CardTitle>
                 <CardDescription>
                   {
                     isOrphaned
                       ? "This app is not currently available from any known source."
-                      : `Compatible with ${app.data.compatibility}`
+                      : `Compatible with ${display.compatibility}`
                   }
                 </CardDescription>
               </CardHeader>
@@ -209,11 +229,11 @@ const formatSize = (size: string) => {
                   ) : (
                     <InstallButton
                       client:load
-                      appName={app.data.name}
-                      downloadUrl={app.data.downloadUrl}
-                      palDownloadUrl={app.data.palDownloadUrl}
+                      appName={display.name}
+                      downloadUrl={display.downloadUrl}
+                      palDownloadUrl={display.palDownloadUrl}
                       sourceUrl={preferredSourceUrl}
-                      bundleId={app.data.bundleId}
+                      bundleId={display.bundleId}
                       size="lg"
                     />
                   )
@@ -286,7 +306,7 @@ const formatSize = (size: string) => {
           <!-- Description/Content -->
           <Card>
             <CardHeader>
-              <CardTitle>About {app.data.name}</CardTitle>
+              <CardTitle>About {display.name}</CardTitle>
             </CardHeader>
             <CardContent
               className="prose prose-sm max-w-none dark:prose-invert"
@@ -308,25 +328,25 @@ const formatSize = (size: string) => {
                 <label class="text-sm font-medium text-muted-foreground"
                   >Version</label
                 >
-                <p class="text-sm">{app.data.version}</p>
+                <p class="text-sm">{display.version}</p>
               </div>
               <div>
                 <label class="text-sm font-medium text-muted-foreground"
                   >Size</label
                 >
-                <p class="text-sm">{formatSize(app.data.size)}</p>
+                <p class="text-sm">{formatSize(display.size)}</p>
               </div>
               <div>
                 <label class="text-sm font-medium text-muted-foreground"
                   >Category</label
                 >
-                <p class="text-sm capitalize">{app.data.category}</p>
+                <p class="text-sm capitalize">{display.category}</p>
               </div>
               <div>
                 <label class="text-sm font-medium text-muted-foreground"
                   >Compatibility</label
                 >
-                <p class="text-sm">{app.data.compatibility}</p>
+                <p class="text-sm">{display.compatibility}</p>
               </div>
               <div>
                 <label class="text-sm font-medium text-muted-foreground"
@@ -340,7 +360,7 @@ const formatSize = (size: string) => {
                 <label class="text-sm font-medium text-muted-foreground"
                   >Developer</label
                 >
-                <p class="text-sm">{app.data.developer}</p>
+                <p class="text-sm">{display.developer}</p>
               </div>
             </CardContent>
           </Card>
