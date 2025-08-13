@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { SourceAddButton } from "@/components/source-add-button";
-import { AddSourceModal } from "@/components/add-source-modal";
 import "@/styles/global.css";
 
 const sources = await getCollection("sources");
@@ -67,12 +66,9 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
           <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight">
             Sources
           </h1>
-          <Button id="add-custom-source-btn" variant="outline">
-            + Add Custom Source
-          </Button>
         </div>
         <p class="text-xl text-muted-foreground mb-6">
-          Discover and add sources to your AltStore or AltStore PAL. Sources are
+          Discover sources to your AltStore or AltStore PAL. Sources are
           collections of apps curated by developers and communities.
         </p>
 
@@ -104,9 +100,6 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
           </Card>
         </div>
       </div>
-
-      <!-- Modal Container -->
-      <div id="modal-container"></div>
 
       <!-- Sources by Category -->
       {
@@ -211,10 +204,6 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
         sources.length === 0 && (
           <div class="text-center py-12">
             <h3 class="text-lg font-semibold mb-2">No sources found</h3>
-            <p class="text-muted-foreground mb-4">
-              Get started by adding a custom source!
-            </p>
-            <Button id="add-source-empty">Add Custom Source</Button>
           </div>
         )
       }
@@ -241,34 +230,6 @@ const verifiedSources = sources.filter((source) => source.data.verified).length;
     </footer>
   </body>
 </html>
-
-<script>
-  import { AddSourceModal } from "@/components/add-source-modal";
-  import React from "react";
-  import ReactDOM from "react-dom/client";
-
-  // Setup modal functionality
-  document.addEventListener("DOMContentLoaded", () => {
-    const modalContainer = document.getElementById("modal-container");
-    const addSourceBtn = document.getElementById("add-custom-source-btn");
-    const addSourceEmpty = document.getElementById("add-source-empty");
-
-    if (modalContainer && (addSourceBtn || addSourceEmpty)) {
-      const root = ReactDOM.createRoot(modalContainer);
-
-      const showModal = () => {
-        root.render(
-          React.createElement(AddSourceModal, {
-            onClose: () => root.unmount(),
-          }),
-        );
-      };
-
-      addSourceBtn?.addEventListener("click", showModal);
-      addSourceEmpty?.addEventListener("click", showModal);
-    }
-  });
-</script>
 
 <style>
   .line-clamp-3 {

@@ -1,4 +1,3 @@
-// src/pages/api/fetch-source.ts
 import type { APIRoute } from 'astro';
 import { fetchSourceWithApps } from '@/lib/source-fetcher';
 
