@@ -22,16 +22,23 @@ const appsCollection = defineCollection({
 			"developer",
 		]),
 		compatibility: z.string(), // e.g., "iOS 12.0 or later"
-		downloadUrl: z.string().url(),
-		lastUpdated: z.date(),
 
 		// Enhanced installation fields
 		bundleId: z.string().optional(), // App bundle identifier (e.g., com.rileytestut.Delta)
+		
 		// Multiple distribution sources for this app
+		sources: z.array(z.object({
+			sourceId: z.string(), // Reference to source slug
+			downloadUrl: z.string().url(),
+			version: z.string().optional(),
+			size: z.string().optional(),
+			lastUpdated: z.string().nullable(),
+			isOfficial: z.boolean().default(false), // Whether this is the official source
+		})).min(1), // At least one source required
+		
+		// Legacy fields for backward compatibility (deprecated)
 		sourceUrls: z.array(z.string().url()).optional(),
-		// Back-compat single source (deprecated)
 		sourceUrl: z.string().url().optional(),
-		// Optional official/canonical source for this app (e.g., Official AltStore URL)
 		officialSourceUrl: z.string().url().optional(),
 
 		// Optional fields
@@ -84,8 +91,14 @@ const appsCollection = defineCollection({
 				appStoreUrl: z.string().url().optional(),
 				screenshots: z.array(z.string().url()).optional(),
 				tags: z.array(z.string()).optional(),
-				sourceUrls: z.array(z.string().url()).optional(),
-				officialSourceUrl: z.string().url().optional(),
+				sources: z.array(z.object({
+					sourceId: z.string(),
+					downloadUrl: z.string().url(),
+					version: z.string().optional(),
+					size: z.string().optional(),
+					lastUpdated: z.date().optional(),
+					isOfficial: z.boolean().default(false),
+				})).optional(),
 			})
 			.optional(),
 	}),

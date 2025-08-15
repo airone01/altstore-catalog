@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "fetch-sources": "bunx tsx scripts/update-sources.ts"
+    "fetch-content": "bunx tsx scripts/update-content.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.3",

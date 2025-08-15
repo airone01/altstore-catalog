@@ -67,15 +67,24 @@ export interface ParsedApp {
   size: string;
   category: string;
   compatibility: string;
-  downloadUrl: string;
   bundleId: string;
-  // One or more distribution sources for this app
-  sourceUrls: string[];
-  // Optional canonical/official source URL (e.g., AltStore official)
+  
+  // New structure: multiple distribution sources for this app
+  sources: Array<{
+    sourceId: string; // Reference to source slug
+    downloadUrl: string;
+    version?: string;
+    size?: string;
+    lastUpdated?: Date;
+    isOfficial: boolean;
+  }>;
+  
+  // Legacy fields for backward compatibility (deprecated)
+  sourceUrls?: string[];
   officialSourceUrl?: string;
+  
   palDownloadUrl?: string;
   screenshots?: string[];
-  lastUpdated: Date;
   tags: string[];
   verified: boolean;
   featured: boolean;
@@ -225,6 +234,9 @@ export function parseAltStoreApp(
   // Format size
   const sizeInMB = (app.size / (1024 * 1024)).toFixed(1);
   
+  // Generate sourceId from source name
+  const sourceId = sourceName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  
   return {
     name: app.name,
     developer: app.developerName,
@@ -234,12 +246,19 @@ export function parseAltStoreApp(
     size: `${sizeInMB} MB`,
     category,
     compatibility: 'iOS 14.0 or later', // Default, could be extracted from permissions
-    downloadUrl: app.downloadURL,
     bundleId: app.bundleIdentifier,
+    sources: [{
+      sourceId,
+      downloadUrl: app.downloadURL,
+      version: app.version,
+      size: `${sizeInMB} MB`,
+      lastUpdated: new Date(app.versionDate),
+      isOfficial: sourceName.toLowerCase().includes('altstore'),
+    }],
+    // Legacy fields for backward compatibility
     sourceUrls: [sourceUrl],
     officialSourceUrl: sourceName.toLowerCase().includes('altstore') ? sourceUrl : undefined,
     screenshots: app.screenshotURLs,
-    lastUpdated: new Date(app.versionDate),
     tags,
     // Verified must be set manually in content files; never infer here
     verified: false,

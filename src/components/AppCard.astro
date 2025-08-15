@@ -18,6 +18,10 @@ interface Props {
 }
 
 const { app, compact = false, loading } = Astro.props as Props;
+
+// Get source count from new sources structure or legacy sourceUrls
+const sourceCount =
+  app.data.sources?.length || app.data.sourceUrls?.length || 0;
 ---
 
 <Card className="hover:shadow-lg transition-shadow">
@@ -56,7 +60,7 @@ const { app, compact = false, loading } = Astro.props as Props;
             app.data.verified && (
               <Badge
                 variant="outline"
-                className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-yellow-200"
               >
                 ✓
               </Badge>
@@ -83,7 +87,21 @@ const { app, compact = false, loading } = Astro.props as Props;
 
     <div class="flex items-center justify-between">
       <div class="text-xs text-muted-foreground">
-        Updated {app.data.lastUpdated.toLocaleDateString()}
+        <div>
+          Updated {
+            app.data.sources[0]?.lastUpdated
+              ? new Date(app.data.sources[0]?.lastUpdated).toLocaleDateString()
+              : ""
+          }
+        </div>
+        {
+          sourceCount > 0 && (
+            <div class="text-blue-600 dark:text-blue-400">
+              {sourceCount} source{sourceCount !== 1 ? "s" : ""} sharing this
+              app
+            </div>
+          )
+        }
       </div>
       <a href={`/apps/${app.slug}`}>
         <Button size="sm">{compact ? "View" : "View App"}</Button>

@@ -15,7 +15,27 @@ const sources = await getCollection("sources");
 const sortedApps = apps.sort((a, b) => {
   const priorityDiff = (b.data.priority || 0) - (a.data.priority || 0);
   if (priorityDiff !== 0) return priorityDiff;
-  return b.data.lastUpdated.getTime() - a.data.lastUpdated.getTime();
+
+  // For apps with multiple sources, use the most recent update
+  const aLatestUpdate =
+    a.data.sources?.reduce((latest, source) => {
+      const sourceDate = source.lastUpdated;
+      return sourceDate && sourceDate > (latest ?? new Date("1970-01-01"))
+        ? sourceDate
+        : latest;
+    }, a.data.sources[0]?.lastUpdated) || a.data.sources[0]?.lastUpdated;
+
+  const bLatestUpdate =
+    b.data.sources?.reduce((latest, source) => {
+      const sourceDate = source.lastUpdated;
+      return sourceDate && sourceDate > (latest ?? new Date("1970-01-01"))
+        ? sourceDate
+        : latest;
+    }, b.data.sources[0]?.lastUpdated) || b.data.sources[0]?.lastUpdated;
+
+  return bLatestUpdate && aLatestUpdate
+    ? new Date(bLatestUpdate).getTime() - new Date(aLatestUpdate).getTime()
+    : 0;
 });
 
 // Get featured apps

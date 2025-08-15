@@ -34,7 +34,7 @@ const display = {
   size: app.data.overrides?.size ?? app.data.size,
   category: app.data.overrides?.category ?? app.data.category,
   compatibility: app.data.overrides?.compatibility ?? app.data.compatibility,
-  downloadUrl: app.data.overrides?.downloadUrl ?? app.data.downloadUrl,
+  downloadUrl: app.data.sources[0]?.downloadUrl,
   palDownloadUrl: app.data.overrides?.palDownloadUrl ?? app.data.palDownloadUrl,
   bundleId: app.data.overrides?.bundleId ?? app.data.bundleId,
   website: app.data.overrides?.website ?? app.data.website,
@@ -48,18 +48,58 @@ const display = {
 const allSources = await getCollection("sources");
 const knownSourceUrls = new Set(allSources.map((s) => s.data.url));
 
-const appSourceUrls: string[] = Array.isArray(app.data.sourceUrls)
+// Get app sources from new structure or legacy fields
+const appSources = app.data.sources || [];
+const legacySourceUrls: string[] = Array.isArray(app.data.sourceUrls)
   ? app.data.sourceUrls
   : app.data.sourceUrl
     ? [app.data.sourceUrl]
     : [];
 
-const availableSourceUrls = appSourceUrls.filter((u) => knownSourceUrls.has(u));
-const isOrphaned = availableSourceUrls.length === 0;
-const preferredSourceUrl =
-  app.data.officialSourceUrl && knownSourceUrls.has(app.data.officialSourceUrl)
-    ? app.data.officialSourceUrl
-    : availableSourceUrls[0];
+// Map source IDs to actual source objects
+const availableSources = appSources
+  .map((source) => {
+    const sourceObj = allSources.find((s) => s.slug === source.sourceId);
+    return {
+      ...source,
+      source: sourceObj,
+      sourceName: sourceObj?.data.name || source.sourceId,
+      sourceUrl: sourceObj?.data.url || "",
+      verified: sourceObj?.data.verified || false,
+    };
+  })
+  .filter((s) => s.source); // Only include sources that exist
+
+// Legacy support: also check sourceUrls
+const legacySources = legacySourceUrls
+  .filter((url) => knownSourceUrls.has(url))
+  .map((url) => {
+    const sourceObj = allSources.find((s) => s.data.url === url);
+    return {
+      sourceId: sourceObj?.slug || "unknown",
+      downloadUrl: app.data.sources[0]?.downloadUrl,
+      version: app.data.version,
+      size: app.data.size,
+      lastUpdated: app.data.sources[0]?.lastUpdated,
+      isOfficial: url === app.data.officialSourceUrl,
+      source: sourceObj,
+      sourceName: sourceObj?.data.name || "Unknown Source",
+      sourceUrl: url,
+      verified: sourceObj?.data.verified || false,
+    };
+  });
+
+// Combine both sources, preferring the new structure
+const allAppSources = [
+  ...availableSources,
+  ...legacySources.filter(
+    (ls) => !availableSources.some((as) => as.sourceId === ls.sourceId),
+  ),
+];
+
+const isOrphaned = allAppSources.length === 0;
+const preferredSource =
+  allAppSources.find((s) => s.isOfficial) || allAppSources[0];
 
 // Get related apps (same category, excluding current)
 const allApps = await getCollection("apps");
@@ -232,7 +272,7 @@ const formatSize = (size: string) => {
                       appName={display.name}
                       downloadUrl={display.downloadUrl}
                       palDownloadUrl={display.palDownloadUrl}
-                      sourceUrl={preferredSourceUrl}
+                      sourceUrl={preferredSource.sourceUrl}
                       bundleId={display.bundleId}
                       size="lg"
                     />
@@ -303,6 +343,70 @@ const formatSize = (size: string) => {
             )
           }
 
+          <!-- Available Sources -->
+          {
+            allAppSources.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Available Sources</CardTitle>
+                  <CardDescription>
+                    Install {display.name} from any of these trusted sources
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div class="space-y-3">
+                    {allAppSources.map((source, index) => (
+                      <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                        <div class="flex items-center gap-3">
+                          <div class="flex items-center gap-2">
+                            {source.isOfficial && (
+                              <Badge
+                                variant="outline"
+                                className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                              >
+                                Official
+                              </Badge>
+                            )}
+                            {source.verified && (
+                              <Badge
+                                variant="outline"
+                                className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                              >
+                                ✓ Verified
+                              </Badge>
+                            )}
+                          </div>
+                          <div>
+                            <div class="font-medium text-sm">
+                              {source.sourceName}
+                            </div>
+                            <div class="text-xs text-muted-foreground">
+                              v{source.version} • {source.size} • Updated{" "}
+                              {source.lastUpdated
+                                ? new Date(
+                                    source.lastUpdated,
+                                  ).toLocaleDateString()
+                                : "Unknown"}
+                            </div>
+                          </div>
+                        </div>
+                        <InstallButton
+                          client:load
+                          appName={display.name}
+                          downloadUrl={source.downloadUrl}
+                          palDownloadUrl={display.palDownloadUrl}
+                          sourceUrl={source.sourceUrl}
+                          bundleId={display.bundleId}
+                          size="sm"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          }
+
           <!-- Description/Content -->
           <Card>
             <CardHeader>
@@ -353,7 +457,13 @@ const formatSize = (size: string) => {
                   >Last Updated</label
                 >
                 <p class="text-sm">
-                  {app.data.lastUpdated.toLocaleDateString()}
+                  {
+                    app.data.sources[0]?.lastUpdated
+                      ? new Date(
+                          app.data.sources[0]?.lastUpdated,
+                        ).toLocaleDateString()
+                      : "Unknown"
+                  }
                 </p>
               </div>
               <div>
@@ -366,57 +476,57 @@ const formatSize = (size: string) => {
           </Card>
 
           <!-- Links -->
-          <Card>
-            <CardHeader>
-              <CardTitle>Links</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {
-                app.data.website && (
-                  <a
-                    href={app.data.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="block"
-                  >
-                    <Button variant="outline" className="w-full" size="sm">
-                      Official Website
-                    </Button>
-                  </a>
-                )
-              }
+          {
+            app.data.website ||
+              app.data.repoUrl ||
+              (app.data.appStoreUrl && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Links</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {app.data.website && (
+                      <a
+                        href={app.data.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="block"
+                      >
+                        <Button variant="outline" className="w-full" size="sm">
+                          Official Website
+                        </Button>
+                      </a>
+                    )}
 
-              {
-                app.data.repoUrl && (
-                  <a
-                    href={app.data.repoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="block"
-                  >
-                    <Button variant="outline" className="w-full" size="sm">
-                      Source Code
-                    </Button>
-                  </a>
-                )
-              }
+                    {app.data.repoUrl && (
+                      <a
+                        href={app.data.repoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="block"
+                      >
+                        <Button variant="outline" className="w-full" size="sm">
+                          Source Code
+                        </Button>
+                      </a>
+                    )}
 
-              {
-                app.data.appStoreUrl && (
-                  <a
-                    href={app.data.appStoreUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="block"
-                  >
-                    <Button variant="outline" className="w-full" size="sm">
-                      App Store
-                    </Button>
-                  </a>
-                )
-              }
-            </CardContent>
-          </Card>
+                    {app.data.appStoreUrl && (
+                      <a
+                        href={app.data.appStoreUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="block"
+                      >
+                        <Button variant="outline" className="w-full" size="sm">
+                          App Store
+                        </Button>
+                      </a>
+                    )}
+                  </CardContent>
+                </Card>
+              ))
+          }
 
           <!-- Installation Requirements -->
           <Card>
